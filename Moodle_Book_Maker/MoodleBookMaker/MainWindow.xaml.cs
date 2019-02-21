@@ -83,11 +83,11 @@ namespace MoodleBookMaker {
 
 				for( int i = 1; i < pages.Length; i++ ) {
 					// Write page to same directory as source
-					string fullPage = head + separator[0] + pages[i];
+					string fullPage = head + separator[0] + pages[i] + tail;
 					//System.Windows.MessageBox.Show( fullPage );
 
 					// Check for existing file clashes
-					string curFile = newPath + PageName.Text + i + ".html";
+					string curFile = newPath + PageName.Text + " - Page " + i + ".html";
 
 					if( System.IO.File.Exists( curFile ) ) {
 						// Found a file clash
@@ -97,7 +97,7 @@ namespace MoodleBookMaker {
 
 						} else if( overwrite == System.Windows.Forms.DialogResult.Yes ) {
 							// User has chosen to overwrite files
-							System.IO.File.WriteAllText( curFile, pages[i] );
+							System.IO.File.WriteAllText( curFile, fullPage );
 						} else {
 							// overwrite set to Cancel, first clash found
 							overwrite = System.Windows.Forms.MessageBox.Show( curFile + " already exists. Do you want to overwrite any existing files?", "File already exists", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
@@ -106,14 +106,14 @@ namespace MoodleBookMaker {
 								break;
 							} else if ( overwrite == System.Windows.Forms.DialogResult.Yes ) {
 								// Write the file and continue
-								System.IO.File.WriteAllText( curFile, pages[i] );
+								System.IO.File.WriteAllText( curFile, fullPage );
 							} else {
 								// Don't write the file, but still continue
 							}
 						}
 					} else {
 						// Not a clash, go and write the file
-						System.IO.File.WriteAllText( curFile, pages[i] );
+						System.IO.File.WriteAllText( curFile, fullPage );
 					}
 					Progress.Value = i / pages.Length;
 				}

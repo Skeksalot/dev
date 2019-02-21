@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:visibility="visible"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="#545454"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:visibility="visible"
+        android:layout_marginBottom="0.0dp"
+        android:id="@+id/topLayout"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="Search by City Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/citySearchLabel"
+            android:layout_marginStart="10dp"
+            android:textColor="#ffffffff"
+            android:textStyle="bold" />
+        <TextView
+            android:text="City Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/citySearchLabel"
+            android:id="@+id/cityIDLabel"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="6dp"
+            android:textColor="#ffffffff" />
+		<TextView
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/cityIDLabel"
+			android:id="@+id/cityEntry"
+			android:layout_marginStart="10dp"
+			android:layout_marginBottom="10dp"
+			android:width="165dp"
+			android:textColor="#ffffffff"
+			android:textIsSelectable="true"
+			android:inputType="text"
+			android:includeFontPadding="false"
+			android:hint="Enter Name Here"
+			android:layout_marginTop="20dp"
+			android:enabled="true"
+			android:editable="true" />
+		<Button
+			android:text="Get Weather"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/cityEntry"
+			android:id="@+id/weatherBtn"
+			android:layout_marginStart="20dp"
+			android:width="165dp"
+			android:layout_alignBottom="@id/cityEntry" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:visibility="visible"
+        android:layout_marginBottom="0.0dp"
+        android:id="@+id/bottomLayout"
+        android:layout_below="@id/topLayout">
+        <TextView
+            android:text="Location"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/locationLabel"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/locationText"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toRightOf="@id/locationLabel"
+            android:layout_alignBottom="@id/locationLabel" />
+        <TextView
+            android:text="Time of Sunset"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sunsetLabel"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/locationLabel" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sunsetText"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_toRightOf="@id/sunsetLabel"
+            android:layout_alignBottom="@id/sunsetLabel" />
+        <TextView
+            android:text="Time of Sunrise"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sunriseLabel"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/sunsetLabel" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sunriseText"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_toRightOf="@id/sunriseLabel"
+            android:layout_alignBottom="@id/sunriseLabel" />
+        <TextView
+            android:text="Visibility"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/visibilityLabel"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/sunriseLabel" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/visibilityText"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_toRightOf="@id/visibilityLabel"
+            android:layout_alignBottom="@id/visibilityLabel" />
+        <TextView
+            android:text="Humidity"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/humidityLabel"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/visibilityLabel" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/humidityText"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_toRightOf="@id/humidityLabel"
+            android:layout_alignBottom="@id/humidityLabel" />
+        <TextView
+            android:text="Wind Speed"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/windLabel"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/humidityLabel" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/windText"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_toRightOf="@id/windLabel"
+            android:layout_alignBottom="@id/windLabel" />
+        <TextView
+            android:text="Temperature"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tempLabel"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/windLabel" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tempText"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_toRightOf="@id/tempLabel"
+            android:layout_alignBottom="@id/tempLabel" />
+    </RelativeLayout>
+</RelativeLayout>
