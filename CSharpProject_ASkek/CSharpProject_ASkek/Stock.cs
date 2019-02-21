@@ -8,15 +8,18 @@ namespace CSharpProject_ASkek
 {
 	class Stock
 	{
-		private string itemCode { get; set; }
-		private string description { get; set; }
-		private int count { get; set; }
-		private bool onOrder { get; set; }
-		public Stock( string iCode, string desc, int newCount, bool order ) {
-			itemCode = iCode;
-			description = desc;
-			count = newCount;
-			onOrder = order;
+		private string ItemCode { get; set; }
+		private string Description { get; set; }
+		private int Count { get; set; }
+		private string OnOrder { get; set; }
+		public Stock( string iCode, string desc, int newCount, string order ) {
+			ItemCode = iCode;
+			Description = desc;
+			Count = newCount;
+			OnOrder = order;
+		}
+		public string toString() {
+			return ItemCode + " | " + Description + " | " + Count + " | " + OnOrder;
 		}
 	}
 }

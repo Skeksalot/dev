@@ -9,8 +9,12 @@
 	<Grid>
 		<ToolBar HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="794" Margin="0,0,-0.4,0" Header="Menu: ">
 			<MenuItem x:Name="Menu_Open" Header="Open" Click="Menu_Open_Click"/>
-			<MenuItem x:Name="Menu_Save" Cursor="Arrow" Header="Save" Click="Menu_Save_Click"/>
+			<MenuItem Header="Save"/>
+			<MenuItem x:Name="Menu_Save" Cursor="Arrow" Header="Sort" Click="Menu_Save_Click">
+				<Button Content="Item Code"/>
+				<Button Content="Current Count"/>
+				<Button Content="On Order"/>
+			</MenuItem>
 		</ToolBar>
-		<DataGrid HorizontalAlignment="Left" Height="376" Margin="10,34,0,0" VerticalAlignment="Top" Width="774" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#FF767676" AlternatingRowBackground="#FF9FB2FF" AlternationCount="1"/>
 	</Grid>
 </Window>

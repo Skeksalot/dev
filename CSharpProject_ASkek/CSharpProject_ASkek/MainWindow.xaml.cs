@@ -20,9 +20,10 @@ namespace CSharpProject_ASkek
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
+	/// 	
 	public partial class MainWindow : Window
 	{
-
+		private List<Stock> AllStock { get; set; } = new List<Stock>();
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -36,21 +37,31 @@ namespace CSharpProject_ASkek
 			
 			OpenFileDialog fileDialog = new OpenFileDialog();
 			fileDialog.InitialDirectory = "C://";
-			fileDialog.Filter = "text files|*.txt; comma separated value files|*.csv";
+			fileDialog.Filter = "comma separated value files (*.csv)|*.csv|text files (*.txt*)|*.txt";
 			if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				// If all is ok from the fileDialog, set the path for the file
 				path = fileDialog.FileName;
 			}
 			// Open a FileStream to read from the csv file
-			FileStream fs = null;
+			StreamReader fs = null;
 			try {
-				fs = File.Open(path, FileMode.Open, FileAccess.Read);
+				fs = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read));
+				string newLine = "";
+				// Pull out headers to use in display
+				string[] headers = fs.ReadLine().Trim().Split(',');
+				while ( (newLine = fs.ReadLine()) != null )
+				{
+					// Read all lines and create stock lisitings for each line
+					string[] temp = newLine.Trim().Split(',');
+					AllStock.Append(new Stock( temp[0], temp[1], int.Parse(temp[2]), temp[3] ));
+				}
 			}
 			finally
 			{
 				fs.Close();
 			}
+			// Process data into the user view
 		}
 		// Method to handle saving adjusted stock to a new file
 		private void SaveStock()
@@ -66,6 +77,11 @@ namespace CSharpProject_ASkek
 		private void Menu_Save_Click( object sender, RoutedEventArgs e )
 		{
 			SaveStock();
+		}
+
+		private void DataView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+
 		}
 	}
 }
