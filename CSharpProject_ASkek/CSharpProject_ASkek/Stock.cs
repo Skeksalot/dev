@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace CSharpProject_ASkek
 {
+	public enum OrderStatus { Yes, No, Err }
 	class Stock
 	{
-		private string ItemCode { get; set; }
-		private string Description { get; set; }
-		private int Count { get; set; }
-		private string OnOrder { get; set; }
-		public Stock( string iCode, string desc, int newCount, string order ) {
+		public string ItemCode { get; set; }
+		public string Description { get; set; }
+		public int Count { get; set; }
+		public OrderStatus OnOrder { get; set; }
+		public Stock( string iCode, string desc, int newCount, OrderStatus order ) {
 			ItemCode = iCode;
 			Description = desc;
 			Count = newCount;
@@ -20,6 +21,22 @@ namespace CSharpProject_ASkek
 		}
 		public string toString() {
 			return ItemCode + " | " + Description + " | " + Count + " | " + OnOrder;
+		}
+
+		public static OrderStatus ToStatus( string str )
+		{
+			if( str.ToLower() == "yes")
+			{
+				return OrderStatus.Yes;
+			}
+			else if( str.ToLower() == "no")
+			{
+				return OrderStatus.No;
+			}
+			else
+			{
+				return OrderStatus.Err;
+			}
 		}
 	}
 }

@@ -3,18 +3,29 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:core="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:CSharpProject_ASkek"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+	<Window.Resources>
+		<ObjectDataProvider x:Key="OrderStatus" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+			<ObjectDataProvider.MethodParameters>
+				<x:Type Type="local:OrderStatus"/>
+			</ObjectDataProvider.MethodParameters>
+		</ObjectDataProvider>
+	</Window.Resources>
 	<Grid>
 		<ToolBar HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="794" Margin="0,0,-0.4,0" Header="Menu: ">
 			<MenuItem x:Name="Menu_Open" Header="Open" Click="Menu_Open_Click"/>
 			<MenuItem Header="Save"/>
-			<MenuItem x:Name="Menu_Save" Cursor="Arrow" Header="Sort" Click="Menu_Save_Click">
-				<Button Content="Item Code"/>
-				<Button Content="Current Count"/>
-				<Button Content="On Order"/>
-			</MenuItem>
 		</ToolBar>
+		<DataGrid x:Name="Stocks_DataGrid" HorizontalAlignment="Left" Height="376" Margin="10,34,0,0" VerticalAlignment="Top" Width="774">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Item Code"  Binding="{Binding Item_Code}"/>
+				<DataGridTextColumn Header="Description"  Binding="{Binding Description}"/>
+				<DataGridTextColumn Header="Current Count"  Binding="{Binding Current_Count}"/>
+				<DataGridComboBoxColumn Header="On Order"  SelectedItemBinding="{Binding On_Order}" ItemsSource="{Binding Source={StaticResource OrderStatus}}"/>
+			</DataGrid.Columns>
+		</DataGrid>
 	</Grid>
 </Window>
