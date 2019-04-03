@@ -24,6 +24,7 @@ namespace CSharpProject_ASkek
 	/// 
 	public partial class MainWindow : Window
 	{
+		// Required to use a list or array data structure
 		private List<Stock> StockList;
 		private DataSet StockSet;
 		private DataTable StockTable;
@@ -34,12 +35,14 @@ namespace CSharpProject_ASkek
 			StockList = new List<Stock>();
 			StockSet = new DataSet("CurrentStock");
 			// Creating the backend data structures for storing and displaying data
-			StockTable = StockSet.Tables.Add("Stock");
+			StockTable = new DataTable("Stock");
 			DataColumn stockID = StockTable.Columns.Add("Item_Code", typeof(string));
 			StockTable.Columns.Add("Description", typeof(string));
 			StockTable.Columns.Add("Current_Count", typeof(int));
 			StockTable.Columns.Add("On_Order", typeof(OrderStatus));
 			StockTable.PrimaryKey = new DataColumn[] { stockID };
+			StockSet.Tables.Add(StockTable);
+			
 		}
 	
 		// Method for opening CSV stock file
@@ -68,7 +71,7 @@ namespace CSharpProject_ASkek
 					// Read all lines and create stock lisitings for each line
 					string[] temp = newLine.Trim().Split(',');
 					//StockList.Append(new Stock( temp[0], temp[1], int.Parse(temp[2]), Stock.ToStatus(temp[3]) ));
-					StockList.Add(new Stock(temp[0], temp[1], int.Parse(temp[2]), Stock.ToStatus(temp[3])));
+					StockList.Add(new Stock(temp[0], temp[1], int.Parse(temp[2].Trim()), Stock.ToStatus(temp[3].Trim())));
 				}
 			}
 			finally
@@ -91,11 +94,10 @@ namespace CSharpProject_ASkek
 					row["Current_Count"] = temp.Count;
 					row["On_Order"] = temp.OnOrder;
 					StockTable.Rows.Add(row);
+					Console.WriteLine(temp.toString());
 				}
 				Stocks_DataGrid.DataContext = StockTable;
-				Stocks_DataGrid
-				Console.Write(StockList.ToString());
-				Console.Write(Stocks_DataGrid.ToString());
+				
 			}
 		}
 		// Method to handle saving adjusted stock to a new file
@@ -113,8 +115,13 @@ namespace CSharpProject_ASkek
 		{
 			SaveStock();
 		}
+		// Handlers for applying differing styles to to the output
+		private void Style1_Selected( object sender, RoutedEventArgs e )
+		{
 
-		private void DataView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		}
+
+		private void Style2_Selected( object sender, RoutedEventArgs e )
 		{
 
 		}

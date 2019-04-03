@@ -1,10 +1,11 @@
-﻿<Window x:Class="CSharpProject_ASkek.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:core="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:CSharpProject_ASkek"
+        xmlns:Properties="clr-namespace:CSharpProject_ASkek.Properties" x:Class="CSharpProject_ASkek.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 	<Window.Resources>
@@ -15,11 +16,15 @@
 		</ObjectDataProvider>
 	</Window.Resources>
 	<Grid>
-		<ToolBar HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="794" Margin="0,0,-0.4,0" Header="Menu: ">
+		<ToolBar x:Name="Menu" HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="794" Margin="0,0,0,0" Header="Menu: ">
 			<MenuItem x:Name="Menu_Open" Header="Open" Click="Menu_Open_Click"/>
-			<MenuItem Header="Save"/>
+			<MenuItem x:Name="Menu_Save" Header="Save" Click="Menu_Save_Click"/>
+			<ComboBox x:Name="Styles" Height="24" Margin="0" VerticalAlignment="Top" Width="120" IsDropDownOpen="True">
+				<ComboBoxItem x:Name="Style1" Content="Style 1"/>
+				<ComboBoxItem x:Name="Style2" Content="Style 2" Selected="Style2_Selected"/>
+			</ComboBox>
 		</ToolBar>
-		<DataGrid x:Name="Stocks_DataGrid" HorizontalAlignment="Left" Height="376" Margin="10,34,0,0" VerticalAlignment="Top" Width="774">
+		<DataGrid x:Name="Stocks_DataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalAlignment="Left" Height="376" Margin="10,34,0,0" VerticalAlignment="Top" Width="774">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Item Code"  Binding="{Binding Item_Code}"/>
 				<DataGridTextColumn Header="Description"  Binding="{Binding Description}"/>

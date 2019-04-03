@@ -14,8 +14,8 @@ namespace CSharpProject_ASkek
 		public int Count { get; set; }
 		public OrderStatus OnOrder { get; set; }
 		public Stock( string iCode, string desc, int newCount, OrderStatus order ) {
-			ItemCode = iCode;
-			Description = desc;
+			ItemCode = iCode.Trim();
+			Description = desc.Trim();
 			Count = newCount;
 			OnOrder = order;
 		}
@@ -25,11 +25,11 @@ namespace CSharpProject_ASkek
 
 		public static OrderStatus ToStatus( string str )
 		{
-			if( str.ToLower() == "yes")
+			if( str.ToLower().Trim() == "yes")
 			{
 				return OrderStatus.Yes;
 			}
-			else if( str.ToLower() == "no")
+			else if( str.ToLower().Trim() == "no")
 			{
 				return OrderStatus.No;
 			}
