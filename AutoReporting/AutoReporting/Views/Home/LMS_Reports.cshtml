@@ -5,6 +5,16 @@
 
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
+
 <div class="col-md-12">
 	<iframe src="https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1" class="report-iframe"></iframe>
+</div>
+
+<div class="col-md-12">
+	<form method="post" action="Validate_Request();" name="Submit Download Request" target="_blank" >
+		<input type="text" maxlength="50" name="Trainer Name" placeholder="Individual Trainer" />
+		<button type="button" name="Download Individual Report">Download Trainer Report</button>
+		<br /><br />
+		<button type="button" name="Download All Reports">Download All Trainer Reports</button>
+	</form>
 </div>
