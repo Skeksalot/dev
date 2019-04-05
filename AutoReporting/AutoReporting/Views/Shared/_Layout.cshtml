@@ -44,31 +44,30 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
-		<footer>
-			<div class="col-md-3">
-				<p>&copy; 2019 - Andrew Skeklios</p>
-			</div>
-			<div class="col-md-3">
-				<p class="footer-links">External Links:</p>
-			</div>
-			<div class="col-md-3">
-				<ul class="footer-links">
-					<li><a href="https://lms.upskilled.edu.au" target="_blank">Upskilled LMS</a></li>
-					<li><a href="https://upskilled.my.salesforce.com/home/home.jsp" target="_blank">Salesforce Home</a></li>
-					<li><a href="https://sites.google.com/upskilled.edu.au/upskilledintranet/home" target="_blank">Upskilled Intranet</a></li>
-					<li><a href="https://sites.google.com/upskilled.edu.au/brand/home?authuser=0" target="_blank">Upskilled Intranet</a></li>
-				</ul>
-			</div>
-			<div class="col-md-3">
-				<a href="https://www.upskilled.edu.au" target="_blank" class="footer-logo" ><img src="~/images/Wordmark secondary on white.png" alt="Upskilled Logo and link to upskilled.edu.au" class="footer-logo" /></a>
-			</div>
-		</footer>
     </div>
+
+	<footer id="foot" class="panel-footer">
+		<div class="col-md-3">
+			<a href="https://www.upskilled.edu.au" target="_blank" class="footer-logo"><img src="~/images/Wordmark secondary on black.png" alt="Upskilled Logo and link to upskilled.edu.au" class="footer-logo" /></a>
+		</div>
+		<div class="col-md-3">
+			<p class="footer-links">External Links:</p>
+		</div>
+		<div class="col-md-3">
+			<a href="https://lms.upskilled.edu.au" target="_blank"><img src="~/images/Secondary gradient.png" class="footer-icon" alt="Link to Upskilled LMS" /></a>
+			<a href="https://upskilled.my.salesforce.com/home/home.jsp" target="_blank"><img src="https://upskilled.my.salesforce.com/favicon.ico" class="footer-icon" alt="Link to Salesforce home" /></a>
+			<a href="https://sites.google.com/upskilled.edu.au/upskilledintranet/home" target="_blank"><img src="~/images/Logo White Primary.png" class="footer-icon" alt="Link to Upskilled intranet" /></a>
+			<a href="https://sites.google.com/upskilled.edu.au/brand/home?authuser=0" target="_blank"><img src="~/images/Logo White Secondary.png" class="footer-icon" alt="Link to brad guidelines site" /></a>
+		</div>
+		<div class="col-md-3">
+			<p class="copyright">&copy; 2019 - Andrew Skeklios</p>
+		</div>
+	</footer>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/site.js" asp-append-version="false"></script>
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"

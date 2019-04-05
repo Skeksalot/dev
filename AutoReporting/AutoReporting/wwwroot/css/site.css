@@ -50,8 +50,13 @@ a.footer-logo {
 	float: right;
 }
 
+p.copyright {
+	float: left;
+	color: #FFFFFF;
+}
+
 img.footer-logo {
-	max-height: 50px;
+	max-height: 32px;
 }
 
 iframe.report-iframe {
@@ -61,6 +66,19 @@ iframe.report-iframe {
 	border: none;
 }
 
-footer {
+#foot {
+	color: #FFFFFF;
+	height: 100%;
 	background-color: #000000;
+	/* background-image: linear-gradient(190deg, #7b1ce9 0%, #1548e0 100%) !important; */
+	margin-bottom: 10px;
+}
+
+.footer-icon {
+	width: 32px;
+	height: 32px;
+}
+
+.footer-icon:hover {
+	opacity: 0.5;
 }

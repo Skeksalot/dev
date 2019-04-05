@@ -11,10 +11,10 @@
 </div>
 
 <div class="col-md-12">
-	<form method="post" action="Validate_Request();" name="Submit Download Request" target="_blank" >
-		<input type="text" maxlength="50" name="Trainer Name" placeholder="Individual Trainer" />
-		<button type="button" name="Download Individual Report">Download Trainer Report</button>
-		<br /><br />
-		<button type="button" name="Download All Reports">Download All Trainer Reports</button>
-	</form>
+	<input id="trainer-list" type="text" name="Trainer_Names" placeholder="Individual Trainers" title="List specific trainers to retrive reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" required autofocus />
+	<button type="button" name="Download_Selected_Reports" onclick="DownloadSelected()" >Download Trainer Report</button>
+	<br />
+	<span>The trainer list should contain letters and spaces, individual trainers need to be separated by commas.</span>
+	<br /><br />
+	<button type="button" name="Download_All_Reports" onclick="DownloadAll()" >Download All Trainer Reports</button>
 </div>
