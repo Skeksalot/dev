@@ -6,15 +6,21 @@
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
 
-<div class="col-md-12">
-	<iframe src="https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1" class="report-iframe"></iframe>
-</div>
+<script src="~/js/site.js" asp-append-version="true"></script>
 
-<div class="col-md-12">
-	<input id="trainer-list" type="text" name="Trainer_Names" placeholder="Individual Trainers" title="List specific trainers to retrive reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" required autofocus />
-	<button type="button" name="Download_Selected_Reports" onclick="DownloadSelected()" >Download Trainer Report</button>
-	<br />
-	<span>The trainer list should contain letters and spaces, individual trainers need to be separated by commas.</span>
-	<br /><br />
-	<button type="button" name="Download_All_Reports" onclick="DownloadAll()" >Download All Trainer Reports</button>
+<div class="row">
+	<div class="col">
+		<iframe src="https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1" class="report-iframe"></iframe>
+	</div>
+</div>
+<div class="row">
+	<div class="col">
+		<input id="trainer-list" type="text" name="Trainer_Names" placeholder="Individual Trainers" title="List specific trainers to retrive reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" required autofocus />
+		<button type="button" name="Download_Selected_Reports" onclick="DownloadSelected()">Download Trainer Report</button>
+		<br />
+		<span>*Note: The trainer list should contain letters and spaces, individual trainers need to be separated by commas.</span>
+		<br /><br />
+		<button type="button" name="Download_All_Reports" onclick="DownloadAll()">Download All Trainer Reports</button>
+		<a id="download" href="" hidden></a>
+	</div>
 </div>

@@ -1,8 +1,14 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
 for details on configuring this project to bundle and minify static web assets. */
+html {
+	position: relative;
+	min-height: 100%;
+}
+
 body {
     padding-top: 50px;
     padding-bottom: 20px;
+	margin-bottom: 60px;
 }
 
 /* Wrapping element */
@@ -66,12 +72,22 @@ iframe.report-iframe {
 	border: none;
 }
 
-#foot {
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	/* Set the fixed height of the footer here */
+	height: 60px;
+	line-height: 60px; /* Vertically center the text there */
+	padding: 0px;
+	background-color: #FFFFFF;
+	border: none;
+}
+
+.footer-container {
 	color: #FFFFFF;
-	height: 100%;
 	background-color: #000000;
 	/* background-image: linear-gradient(190deg, #7b1ce9 0%, #1548e0 100%) !important; */
-	margin-bottom: 10px;
 }
 
 .footer-icon {
@@ -81,4 +97,8 @@ iframe.report-iframe {
 
 .footer-icon:hover {
 	opacity: 0.5;
+}
+
+body {
+	padding-bottom: 0px;
 }

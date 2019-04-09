@@ -1,4 +1,6 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+﻿//import { setTimeout } from "timers";
+
+// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
@@ -26,9 +28,17 @@ function DownloadSelected() {
 	} else {
 		// Names entered and ok
 		// Split out individual trainers
-
+		var names = input.value.split(',');
 		// Download reports
-
+		var i = 0;
+		for (i; i < names.length; i++) {
+			var downLink = document.getElementById("download");
+			downLink.download = names[i].trim() + "_Unmarked.xlsx";
+			downLink.href = "https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1&filter_searchtext=" + names[i].trim() + "&submitbutton=Apply&download=1&format=xls";
+			
+			setTimeout(null, 500);
+			downLink.click();
+		}
 		// Inform the user
 		alert("Selected trainer reports downloaded:\n" + input.value);
 	}
