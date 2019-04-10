@@ -44,3 +44,29 @@ function DownloadSelected() {
 	}
 	return;
 }
+
+function DownloadSelected_AJAX() {
+
+	// Grab trainer lsit from input
+	var input = document.getElementById("trainer-list");
+
+	// Input Validation with HTML5 pattern matching
+	if (!input.checkValidity()) {
+		// Invalid input, report back to the user
+		alert(input.validationMessage);
+	} else {
+		// Names entered and ok
+		// Split out individual trainers
+		var names = input.value.split(',');
+		// Download reports
+		var i = 0;
+		var xhttp = new XMLHttpRequest();
+		for (i = 0; i < names.length; i++) {
+			xhttp.open("GET", "https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1&filter_searchtext=" + names[i].trim() + "&submitbutton=Apply&download=1&format=xls");
+			xhttp.send();
+		}
+		// Inform the user
+		alert("Selected trainer reports downloaded:\n" + input.value);
+	}
+	return;
+}
