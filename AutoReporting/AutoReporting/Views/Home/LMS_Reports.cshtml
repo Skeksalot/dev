@@ -1,4 +1,4 @@
-﻿
+﻿@model LMS_ReportsModel
 @{
 	ViewData["Title"] = "LMS Reports";
 }
@@ -6,16 +6,17 @@
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
 
-<script src="~/js/site.js" asp-append-version="true"></script>
-
+<!--
 <div class="row">
 	<div class="col">
-		<iframe src="https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1" class="report-iframe"></iframe>
+		<iframe src="https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1" name="_LMS" class="report-iframe"></iframe>
 	</div>
 </div>
+-->
+<!--
 <div class="row">
 	<div class="col">
-		<input id="trainer-list" type="text" name="Trainer_Names" placeholder="Individual Trainers" title="List specific trainers to retrive reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" required autofocus />
+		<input id="trainer-list" type="text" name="Trainer_Names" placeholder="Individual Trainers" title="List specific trainers to retrive reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" value="" required autofocus />
 		<button type="button" name="Download_Selected_Reports" onclick="DownloadSelected()">Download Trainer Report</button>
 		<br />
 		<span>*Note: The trainer list should contain letters and spaces, individual trainers need to be separated by commas.</span>
@@ -23,4 +24,18 @@
 		<button type="button" name="Download_All_Reports" onclick="DownloadAll()">Download All Trainer Reports</button>
 		<a id="download" href="" hidden></a>
 	</div>
+</div>
+<hr />
+-->
+<div class="row">
+	<form id="DownSelect" asp-action="LMS_Reports" asp-controller="Home" name="DownSelect" method="post">
+		<input id="trainers" type="text" placeholder="Individual Trainers" title="List specific trainers to retrieve reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" asp-for="Trainer_names" class="form-control" required autofocus />
+		<button type="submit" name="Download_Selected" value="Download_Selected" class="btn btn-default">Download Trainer Report</button>
+		<br />
+		<span>*Note: The trainer list should contain letters and spaces, individual trainers need to be separated by commas.</span>
+	</form>
+	<br /><br />
+	<form id="DownAll" name="DownAll" method="post">
+		<button type="submit" name="Download_All" value="Download_All" class="btn btn-default">Download All Trainer Reports</button>
+	</form>
 </div>

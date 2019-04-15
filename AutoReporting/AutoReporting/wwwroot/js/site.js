@@ -16,6 +16,13 @@ function DownloadAll() {
 	return;
 }
 
+function DownloadClick(name) {
+	var downLink = document.getElementById("download");
+	downLink.download = name.trim() + "_Unmarked.xlsx";
+	downLink.href = "https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1&filter_searchtext=" + name.trim() + "&submitbutton=Apply";
+	downLink.click();
+}
+
 function DownloadSelected() {
 
 	// Grab trainer lsit from input
@@ -32,15 +39,13 @@ function DownloadSelected() {
 		// Download reports
 		var i = 0;
 		for (i; i < names.length; i++) {
-			var downLink = document.getElementById("download");
-			downLink.download = names[i].trim() + "_Unmarked.xlsx";
-			downLink.href = "https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1&filter_searchtext=" + names[i].trim() + "&submitbutton=Apply&download=1&format=xls";
+			//setTimeout(DownloadClick(names[i]), 2000);
 			
-			setTimeout(null, 500);
-			downLink.click();
+			alert("Selected trainer reports downloaded:\n" + names[i].trim());
+			DownloadClick(names[i]);
 		}
 		// Inform the user
-		alert("Selected trainer reports downloaded:\n" + input.value);
+		//alert("Selected trainer reports downloaded:\n" + input.value);
 	}
 	return;
 }
