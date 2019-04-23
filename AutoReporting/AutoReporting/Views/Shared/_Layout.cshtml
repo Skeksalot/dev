@@ -1,50 +1,53 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AutoReporting</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - AutoReporting</title>
 
-    <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </environment>
+	<environment include="Development">
+		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+		<link rel="stylesheet" href="~/css/site.css" />
+	</environment>
+	<environment exclude="Development">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+		<link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+	</environment>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><img src="~/images/Primary-gradient.png" alt="Upskilled Logo" style="display: inline;" class="navbar-logo"/>AutoReporting</a>
-            </div>
-            <div class="navbar-collapse collapse">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><img src="~/images/Primary-gradient.png" alt="Upskilled Logo" style="display: inline;" class="navbar-logo" />AutoReporting</a>
+			</div>
+			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
 					<li><a asp-area="" asp-controller="Home" asp-action="LMS_Reports">LMS Reports</a></li>
+					<li><a asp-area="" asp-controller="Home" asp-action="Pluralsight_Manager">Pluralsight</a></li>
 					<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
 					<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
 				</ul>
-            </div>
-        </div>
-    </nav>
+			</div>
+		</div>
+	</nav>
 
-    <partial name="_CookieConsentPartial" />
+	<partial name="_CookieConsentPartial" />
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-    </div>
+	<div class="container body-content">
+		@RenderBody()
+		<hr />
+	</div>
+
+	<span id="count" style="position: fixed; top: 0; left: 0; color: white; z-index: 200000000;">0, 0</span>
 
 	<footer class="panel-footer footer">
 		<div class="container-fluid footer-container">
@@ -67,28 +70,109 @@
 			</div>
 		</div>
 	</footer>
+	<!--Start of LiveChat(www.livechatinc.com) code-->
+	<div id="chatContainer" style="opacity: 1; visibility: visible; z-index: 2147483639; position: fixed; bottom: 0px; max-width: 100%; max-height: calc(100% - 0px); min-height: 0px; min-width: 0px; background-color: transparent; border: 0px; overflow: hidden; right: 80px; transition: none 0s ease 0s !important;">
+		<iframe id="chatIframe" src="~/html/livechat.html" srcdoc="<script>window.__lc = window.__lc || {}; window.__lc.license = 2673501; window.__lc.chat_between_groups = false; window.__lc.group = 5; (function() { var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true; lc.src = 'https://cdn.livechatinc.com/tracking.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s); })();</script>" style="width: inherit; height: inherit; margin: 0px; padding: 0px; background-image: none; background-position: 0% 0%; background-size: initial; background-attachment: scroll; background-origin: initial; background-clip: initial; background-color: rgba(0, 0, 0, 0); border-width: 0px; float: none; transition: none 0s ease 0s !important;"></iframe>
+	</div>
+	<script>
+		// POLING METHOD TO SET CORRECT SIZING FOR SECOND LIVECHAT
+		let refresh = setInterval(() => {
+			if (chatIframe.contentDocument.getElementById('chat-widget-container') != null) {
+				var container = chatIframe.contentDocument.getElementById('chat-widget-container');
+				chatIframe.style.width = container.style.width;
+				chatIframe.style.height = container.style.height;
+				//document.getElementById("count").innerHTML = 'Outer: ' + chatIframe.style.width + ', ' + chatIframe.style.height + '<br>Inner: ' + container.style.width + ', ' + container.style.height;
+			} else {}
+		}, 100);
+		clear
+		/* *** TEST JUNK FOR SECOND LIVECHAT ***
 
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-        </script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
+		function resizeChatIframe(name, minSize, x, y) {
+			alert("resize");
+			var chat = document.getElementById(name);
+			if ( (chat.height > minSize) || (chat.width > minSize)) {
+				// needs to be minimised
+				chat.width = minSize;
+				chat.height = minSize;
+			} else {
+				// already minimised, maximise it
+				chat.width = x;
+				chat.height = y;
+			}
+			return;
+		}
+		function resizeChat(name, x, y) {
+			alert("other resize");
+			var chat = document.getElementById(name);
+			chat.width = x;
+			chat.height = y;
+			return;
+		}
 
-    @RenderSection("Scripts", required: false)
+		let oldDoc = chatIframe.contentDocument;
+		// every 100 ms check if the document is the new one
+		let timer = setInterval(() => {
+			if (chatIframe.contentDocument == oldDoc) return;
+
+			//window.top.alert('trigger');
+			chatIframe.width = chatIframe.contentDocument.chat-widget.width;
+			// new document, let's set handlers
+			chatIframe.contentDocument.addEventListener('DOMContentLoaded', () => {
+				chatIframe.contentDocument.body.prepend('Hello, world!');
+			});
+			//chatIframe.addEventListener("DOMContentLoaded", function () { document.getElementById("chatIframe").contentDocument.getElementById("chat-widget").addEventListener("mousedown", function () { if (document.getElementById("chat-widget").height > 84) { window.top.postMessage("minimise", "*"); } else { window.top.postMessage("maximise", "*"); } }) });
+			
+			clearInterval(timer); // cancel setInterval, don't need it any more
+		}, 100);
+		//chatIframe.addEventListener("DOMContentLoaded", function () { document.getElementById("chatIframe").contentWindow.document.getElementById("chat-widget").addEventListener("mousedown", function () { if (document.getElementById("chat-widget").height > 84) { window.top.postMessage("minimise", "*"); } else { window.top.postMessage("maximise", "*"); } }) });
+		//chatIframe.addEventListener("message", function (event) { if (event.data == "minimise") { resizeChat("chatContainer", 84, 84) } else if (event.data == "maximise") { resizeChat("chatContainer", 400, 450) } });
+
+		*** END OF TEST JUNK *** */
+
+	</script>
+	
+	<embed src="~/html/livechat.html" />
+
+	<script type="text/javascript">
+
+		window.__lc = window.__lc || {};
+		window.__lc.license = 2673501;
+		window.__lc.chat_between_groups = false;
+		window.__lc.group = 4;
+
+		(function () {
+			var lc = document.createElement('script');
+			lc.type = 'text/javascript';
+			lc.async = true;
+			lc.src = ('https:' == window.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(lc, s);
+		})();
+
+	</script>
+	<!-- End of LiveChat code -->
+
+	@RenderSection("Scripts", required: false)
+	<environment include="Development">
+		<script src="~/lib/jquery/dist/jquery.js"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+		<script src="~/js/site.js" asp-append-version="true"></script>
+	</environment>
+	<environment exclude="Development">
+		<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+				asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+				asp-fallback-test="window.jQuery"
+				crossorigin="anonymous"
+				integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+		</script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+				asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+				asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+				crossorigin="anonymous"
+				integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
+		</script>
+		<script src="~/js/site.min.js" asp-append-version="true"></script>
+	</environment>
+
 </body>
 </html>

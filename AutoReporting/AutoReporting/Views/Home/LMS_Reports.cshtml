@@ -9,13 +9,6 @@
 <!--
 <div class="row">
 	<div class="col">
-		<iframe src="https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1" name="_LMS" class="report-iframe"></iframe>
-	</div>
-</div>
--->
-<!--
-<div class="row">
-	<div class="col">
 		<input id="trainer-list" type="text" name="Trainer_Names" placeholder="Individual Trainers" title="List specific trainers to retrive reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" value="" required autofocus />
 		<button type="button" name="Download_Selected_Reports" onclick="DownloadSelected()">Download Trainer Report</button>
 		<br />
@@ -27,15 +20,49 @@
 </div>
 <hr />
 -->
+<div class="progress download-progress-bar">
+	<div id="progress" class="progress-bar progress-bar-info active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+		0%
+	</div>
+</div>
+
+@{
+
+	var client = new System.Net.WebClient();
+	//client.DownloadFileAsync( new Uri("https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1&download=1&format=xls"), @"C:\Users\andrews\Downloads\Matt_Unmarked.txt");
+}
+
+@switch (ViewData["Trainer-List"])
+{
+	case null:
+		// First visit, don't download anything
+		break;
+	case "":
+		// No specified names, download all
+		<script>DownloadAll();</script>
+		break;
+	default:
+		// Given a list of names, download those
+		<script>DownloadSelect("@ViewData["Trainer-List"]");</script>
+		break;
+}
+
 <div class="row">
-	<form id="DownSelect" asp-action="LMS_Reports" asp-controller="Home" name="DownSelect" method="post">
-		<input id="trainers" type="text" placeholder="Individual Trainers" title="List specific trainers to retrieve reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" asp-for="Trainer_names" class="form-control" required autofocus />
-		<button type="submit" name="Download_Selected" value="Download_Selected" class="btn btn-default">Download Trainer Report</button>
+	<form asp-action="LMS_Reports" asp-controller="Home" method="post">
+		<input type="text" placeholder="Individual Trainers" title="List specific trainers to retrieve reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" asp-for="Trainer_names" class="form-control" required autofocus />
+		<button type="submit" value="Download_Selected" class="btn btn-default">Download Trainer Report</button>
 		<br />
 		<span>*Note: The trainer list should contain letters and spaces, individual trainers need to be separated by commas.</span>
 	</form>
 	<br /><br />
-	<form id="DownAll" name="DownAll" method="post">
-		<button type="submit" name="Download_All" value="Download_All" class="btn btn-default">Download All Trainer Reports</button>
+	<form asp-action="LMS_Reports" asp-controller="Home" method="post">
+		<input type="text" asp-for="Trainer_names" value="" pattern="[A-Za-z ,]*" class="form-control hidden" hidden />
+		<button type="submit" value="Download_All" class="btn btn-default">Download All Trainer Reports</button>
 	</form>
+</div>
+
+<div class="row">
+	<div class="col">
+		<iframe src="https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1" name="_LMS" class="report-iframe"></iframe>
+	</div>
 </div>

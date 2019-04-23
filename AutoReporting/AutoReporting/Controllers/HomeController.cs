@@ -36,16 +36,26 @@ namespace AutoReporting.Controllers
 
 		public IActionResult LMS_Reports()
 		{
+			
 			ViewData["Message"] = "Access to the LMS reports below.";
-
+			ViewData["Trainer-List"] = null;
 			return View();
 		}
 
 		[HttpPost]
 		public IActionResult LMS_Reports(LMS_ReportsModel model)
 		{
+
 			ViewData["Message"] = "Access to the LMS reports below.";
 			ViewData["Trainer-List"] = ($"{model.Trainer_names}");
+			return View();
+		}
+
+		public IActionResult Pluralsight_Manager()
+		{
+
+			ViewData["Message"] = "Pluralsight User Management. Uses the Pluralsight License Management API to manage users.";
+			
 			return View();
 		}
 

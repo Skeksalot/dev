@@ -102,3 +102,21 @@ iframe.report-iframe {
 body {
 	padding-bottom: 0px;
 }
+
+.download-progress-bar {
+	display: none;
+}
+/*
+#chatContainer:hover {
+	cursor: pointer;
+}
+
+#chatContainer:focus {
+	width: 400px;
+	height: 450px;
+}
+
+#chatContainer:not(:focus) {
+	width: 84px;
+	height: 84px;
+}*/
