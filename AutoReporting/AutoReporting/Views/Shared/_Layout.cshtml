@@ -47,7 +47,7 @@
 		<hr />
 	</div>
 
-	<span id="count" style="position: fixed; top: 0; left: 0; color: white; z-index: 200000000;">0, 0</span>
+	<span id="count" style="position: fixed; top: 0; left: 0; color: white; z-index: 200000000;"></span>
 
 	<footer class="panel-footer footer">
 		<div class="container-fluid footer-container">
@@ -77,14 +77,16 @@
 	<script>
 		// POLING METHOD TO SET CORRECT SIZING FOR SECOND LIVECHAT
 		let refresh = setInterval(() => {
-			if (chatIframe.contentDocument.getElementById('chat-widget-container') != null) {
-				var container = chatIframe.contentDocument.getElementById('chat-widget-container');
+			var container = chatIframe.contentDocument.getElementById('chat-widget-container');
+			if (container != null) {
 				chatIframe.style.width = container.style.width;
 				chatIframe.style.height = container.style.height;
+				document.getElementById('chatContainer').style.width = container.style.width;
+				document.getElementById('chatContainer').style.height = container.style.height;
 				//document.getElementById("count").innerHTML = 'Outer: ' + chatIframe.style.width + ', ' + chatIframe.style.height + '<br>Inner: ' + container.style.width + ', ' + container.style.height;
 			} else {}
 		}, 100);
-		clear
+		
 		/* *** TEST JUNK FOR SECOND LIVECHAT ***
 
 		function resizeChatIframe(name, minSize, x, y) {
@@ -130,8 +132,6 @@
 		*** END OF TEST JUNK *** */
 
 	</script>
-	
-	<embed src="~/html/livechat.html" />
 
 	<script type="text/javascript">
 
