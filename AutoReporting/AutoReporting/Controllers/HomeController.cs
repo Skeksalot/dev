@@ -51,14 +51,6 @@ namespace AutoReporting.Controllers
 			return View();
 		}
 
-		public IActionResult Pluralsight_Manager()
-		{
-
-			ViewData["Message"] = "Pluralsight User Management. Uses the Pluralsight License Management API to manage users.";
-			
-			return View();
-		}
-
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{

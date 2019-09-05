@@ -1,4 +1,4 @@
-﻿
+﻿@model Pluralsight_ManagerModel
 @{
 	ViewData["Title"] = "Pluralsight Manager";
 }
@@ -19,9 +19,16 @@ Add some stats here:
 
 
 	For auto-deleting users, might need to manually pull the id's for students to be culled, and then put them into the site to handle from there.'
-		* Alternative: Download the full list of users, match id's and then check the last access from there
+		* Alternative: Download the full list of users using analytics API, match studnet id's and then check the last access from there
 
 		To download the full list, send GET to: https://app.pluralsight.com/plan-analytics-api/reports/upskilled/user/all/download?range=all.
 			* Must be logged in to Pluralsight first
 -->
-
+<div class="row">
+	<div class="col-sm-12">
+		<form asp-action="Pluralsight_Manager" asp-controller="Pluralsight" method="post">
+			<button id="getUsers" type="submit" class="btn btn-default">Download Pluralsight Users</button>
+		</form>
+		<p>@ViewData["Response"]</p>
+	</div>
+</div>

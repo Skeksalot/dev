@@ -3,6 +3,15 @@
 	ViewData["Title"] = "LMS Reports";
 }
 
+<script>
+	// Forward declarations for later used functions. These are implemented in site.js
+	function checkboxStateHandler(checkBox, container) {}
+	function getSelectedTrainers() {}
+	function allTrainers() {}
+	function clearTrainers() {}
+	function downloadReports() {}
+</script>
+
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
 
@@ -20,33 +29,13 @@
 </div>
 <hr />
 -->
-<div class="progress download-progress-bar">
-	<div id="progress" class="progress-bar progress-bar-info active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+<div id="progressOuter" class="progress" style="display: none;">
+	<div id="progress" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
 		0%
 	</div>
 </div>
 
-@{
-
-	var client = new System.Net.WebClient();
-	//client.DownloadFileAsync( new Uri("https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1&download=1&format=xls"), @"C:\Users\andrews\Downloads\Matt_Unmarked.txt");
-}
-
-@switch (ViewData["Trainer-List"])
-{
-	case null:
-		// First visit, don't download anything
-		break;
-	case "":
-		// No specified names, download all
-		<script>DownloadAll();</script>
-		break;
-	default:
-		// Given a list of names, download those
-		<script>DownloadSelect("@ViewData["Trainer-List"]");</script>
-		break;
-}
-
+<!--
 <div class="row">
 	<form asp-action="LMS_Reports" asp-controller="Home" method="post">
 		<input type="text" placeholder="Individual Trainers" title="List specific trainers to retrieve reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" asp-for="Trainer_names" class="form-control" required autofocus />
@@ -60,9 +49,99 @@
 		<button type="submit" value="Download_All" class="btn btn-default">Download All Trainer Reports</button>
 	</form>
 </div>
+<hr />
+-->
+<div id="LMS" class="row">
+	<button class="btn-block btn-generic btn-lms">Login to LMS</button>
+</div>
+<hr />
+<div class="row">
+	<div class="row">
+		<div id="LMS" class="col-sm-12">
+			<button class="btn-block btn-generic btn-sel" onclick="downloadReports();">Download Selected Reports</button>
+		</div>
+	</div>
+	<div class="row">
+		<div id="SelectAll" class="col-sm-6">
+			<button class="btn-block btn-generic btn-lms" onclick="allTrainers();">Select All</button>
+		</div>
+		<div id="SelectNone" class="col-sm-6">
+			<button class="btn-block btn-generic btn-clr" onclick="clearTrainers();">Clear Selection</button>
+		</div>
+	</div>
+	<div id="individual-reports" class="row">
+		<div id="BUS" class="col-sm-4"></div>
+		<div id="CHC" class="col-sm-4"></div>
+		<div id="ICT" class="col-sm-4"></div>
+		<script>
 
+			var bus = document.getElementById('BUS');
+			var chc = document.getElementById('CHC');
+			var ict = document.getElementById('ICT');
+			// Change this string to whatever database/list storage method used
+			var busNames = ['Jay Bakshi', 'Zaiba Khan'];
+			var chcNames = ['Cat Sorensen-Clark'];
+			var ictNames = ['Charles Lang-Ashe', 'Vikram Mangla', 'Matthew Roderick', 'Fiona Stray'];
+			// Calculate the longest list of trainers to iterate over
+			var longest = Math.max(busNames.length, Math.max(chcNames.length, ictNames.length));
+			for (var i = 0; i < longest; i++) {
+
+				// Create button and append to correct faculty column
+				if (i < busNames.length) {
+					// input is the internal state holder (a hidden checkbox)
+					var input = document.createElement('input');
+					var identifier = busNames[i].trim().replace(' ', '_');
+					input.id = identifier + 'State';
+					input.type = 'checkbox';
+					input.name = identifier;
+					input.className = 'state';
+					// btn is the div which acts as the button
+					var btn = document.createElement('div');
+					btn.className = 'btn-generic btn-bus';
+					// Handler triggers off click event, is passed both the target and its checkbox
+					btn.addEventListener('click', function (event) { checkboxStateHandler(event.target.getElementsByTagName('input')[0], event.target); });
+					btn.innerHTML = busNames[i].trim();
+					btn.appendChild(input);
+					bus.appendChild(btn);
+				}
+				if (i < chcNames.length) {
+					var input = document.createElement('input');
+					var identifier = chcNames[i].trim().replace(' ', '_');
+					input.id = identifier + 'State';
+					input.type = 'checkbox';
+					input.name = identifier;
+					input.className = 'state';
+					var btn = document.createElement('div');
+					btn.className = 'btn-generic btn-chc';
+					btn.addEventListener('click', function (event) { checkboxStateHandler(event.target.getElementsByTagName('input')[0], event.target); });
+					btn.innerHTML = chcNames[i].trim();
+					btn.appendChild(input);
+					chc.appendChild(btn);
+				}
+				if (i < ictNames.length) {
+					var input = document.createElement('input');
+					var identifier = ictNames[i].trim().replace(' ', '_');
+					input.id = identifier + 'State';
+					input.type = 'checkbox';
+					input.name = identifier;
+					input.className = 'state';
+					var btn = document.createElement('div');
+					btn.className = 'btn-generic btn-ict';
+					btn.addEventListener('click', function (event) { checkboxStateHandler(event.target.getElementsByTagName('input')[0], event.target); });
+					btn.innerHTML = ictNames[i].trim();
+					btn.appendChild(input);
+					ict.appendChild(btn);
+				}
+			}
+
+		</script>
+	</div>
+</div>
+
+<!--
 <div class="row">
 	<div class="col">
 		<iframe src="https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1" name="_LMS" class="report-iframe"></iframe>
 	</div>
 </div>
+-->
