@@ -12,7 +12,7 @@ namespace AutoReporting.Controllers
     public class PluralsightController : Controller
     {
 		[HttpGet]
-		public IActionResult Pluralsight_Manager()
+		public IActionResult Pluralsight()
 		{
 
 			ViewData["Message"] = "Pluralsight User Management. Uses the Pluralsight License Management API to manage users.";
@@ -21,12 +21,16 @@ namespace AutoReporting.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Pluralsight_Manager(Pluralsight_ManagerModel model)
+		public async Task<IActionResult> Pluralsight(Pluralsight_Model model)
 		{
 
-			ViewData["Message"] = "Pluralsight User Management. Uses the Pluralsight License Management API to manage users.";
-			model.GetUsersAsync();
-			ViewData["Response"] = model.result;
+			ViewData["Message"] = "Pluralsight User Management. Uses the Pluralsight License Management API to manage users. (Post)";
+			//model.GetUsersAsync();
+			await model.OnGet();
+			//ViewData["Response"] = model.users.data.Count + "\r\n" + model.users.data[0].toString() + "\r\n" + model.result;
+			ViewData["Response"] = model.users.toString();
+			ViewData["UserList"] = model.users.data;
+			model.users.data.Sort();
 			return View();
 		}
 

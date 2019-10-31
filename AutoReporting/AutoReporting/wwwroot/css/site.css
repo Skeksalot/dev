@@ -44,8 +44,8 @@ body {
 
 .navbar-logo {
 	display: inline;
-	padding-right: 8px;
-	max-height: 24px;
+	padding-right: 0.5em;
+	max-height: 1.4em;
 }
 
 p.footer-links {
@@ -62,7 +62,7 @@ p.copyright {
 }
 
 img.footer-logo {
-	max-height: 32px;
+	max-height: 2.4em;
 }
 
 iframe.report-iframe {
@@ -77,9 +77,8 @@ iframe.report-iframe {
 	bottom: 0;
 	width: 100%;
 	/* Set the fixed height of the footer here */
-	height: 60px;
-	line-height: 60px; /* Vertically center the text there */
-	padding: 0px;
+	line-height: 4em; /* Vertically center the text there */
+	padding: 0;
 	background-color: #FFFFFF;
 	border: none;
 }
@@ -91,8 +90,12 @@ iframe.report-iframe {
 }
 
 .footer-icon {
-	width: 32px;
-	height: 32px;
+	width: 2.4em;
+	height: 2.4em;
+}
+
+.footer-icon-container {
+	padding: 0 20em;
 }
 
 .footer-icon:hover {
@@ -100,7 +103,7 @@ iframe.report-iframe {
 }
 
 body {
-	padding-bottom: 0px;
+	padding-bottom: 0em;
 }
 
 .download-progress-bar {
@@ -154,6 +157,32 @@ body {
 
 .state {
 	display: none;
+}
+
+/* Pluralsight management section */
+
+.ps-logo {
+	max-width: 50px;
+	max-height: 50px;
+	margin-right: 8px;
+}
+
+table.pluralsight-users th {
+	padding: 1em 0.5em;
+	background-color: #1548e0;
+	color: #ffffff;
+}
+
+table.pluralsight-users td {
+	padding: 0.5em;
+}
+
+table.pluralsight-users tr:nth-child(even) {
+	background-color: #f6f6fa;
+}
+
+table.pluralsight-users tr:not(:first-child):hover {
+	background-color: rgba(170, 170, 180, 0.6);
 }
 
 #chatContainer[class~=lc-max] {

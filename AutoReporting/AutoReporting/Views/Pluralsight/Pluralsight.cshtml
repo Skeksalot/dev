@@ -1,0 +1,78 @@
+﻿@model Pluralsight_Model
+@{
+	ViewData["Title"] = "Pluralsight Manager";
+}
+
+<h2><img class="ps-logo" src="https://s.pluralsight.com/logos/pluralsight/ps-logo-f-14-v1.png" alt="Pluralsight Logo">@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+<!--
+
+	* Pluralsight API refferences:
+		https://app.pluralsight.com/plans/api/license/docs?planId=upskilled
+		License Management API token: 9c8cdda3-f9cb-4bf0-b243-029b590d2af5
+		- Could be used for removing 'expired' students from Pluralsight
+
+		https://app.pluralsight.com/plans/api/reports/docs
+		Reports API token: 2f08d268-305f-467b-bf67-78f7af1ce36c
+		- Gives complete data set of detailed user logs
+
+Add some stats here:
+
+	- Total users
+	- Active users?
+
+
+	For auto-deleting users, might need to manually pull the id's for students to be culled, and then put them into the site to handle from there.
+		* Alternative: Download the full list of users using analytics API, match student id's and then check the last access from there
+
+		To download the full list, send GET to: https://app.pluralsight.com/plan-analytics-api/reports/upskilled/user/all/download?range=all.
+			* Must be logged in to Pluralsight first
+
+
+	DETAIL FOR LINKEDIN LEARNING HERE UNTIL SEPARATE PAGE MADE
+	https://docs.microsoft.com/en-us/linkedin/consumer/
+
+	Client ID: 86v05nold03qcb
+	Client Secret: hMJ4tstceOPwXt3A
+-->
+<div class="row">
+	<div class="col-sm-12">
+		<form asp-action="Pluralsight" asp-controller="Pluralsight" method="post">
+			<button id="getUsers" type="submit" class="btn btn-default">Download Pluralsight Users</button>
+		</form>
+		@{
+			List<PluralsightUser> users = ViewData["UserList"] as List<PluralsightUser>;
+			if (users != null)
+			{
+				<hr />
+				<span>Total User Count: @users.Count (/1500)</span>
+				<div style="overflow-x: auto;">
+					<table class="pluralsight-users">
+						<tr>
+							<th>Firstname</th>
+							<th>Lastname</th>
+							<th>Email</th>
+							<th>User ID</th>
+							<th>Start Date</th>
+							<th>Team ID</th>
+							<th>Notes</th>
+						</tr>
+						@foreach (PluralsightUser u in users)
+						{
+							<tr>
+								<td>@u.firstName</td>
+								<td>@u.lastName</td>
+								<td>@u.email</td>
+								<td>@u.id</td>
+								<td>@u.startDate</td>
+								<td>@u.teamId</td>
+								<td>@u.note</td>
+							</tr>
+						}
+					</table>
+				</div>
+			}
+		}
+	</div>
+</div>
