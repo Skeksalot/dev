@@ -14,7 +14,7 @@ namespace AutoReporting.Controllers
 		{
 			return View();
 		}
-
+		/*
 		public IActionResult About()
 		{
 			ViewData["Message"] = "This web application is designed to provide easy external access to the LMS reporting functions, and to enable automating the use of regular reports.";
@@ -28,26 +28,9 @@ namespace AutoReporting.Controllers
 
 			return View();
 		}
-
+		*/
 		public IActionResult Privacy()
 		{
-			return View();
-		}
-
-		public IActionResult LMS_Reports()
-		{
-			
-			ViewData["Message"] = "Access to the LMS reports below.";
-			ViewData["Trainer-List"] = null;
-			return View();
-		}
-
-		[HttpPost]
-		public IActionResult LMS_Reports(LMS_ReportsModel model)
-		{
-
-			ViewData["Message"] = "Access to the LMS reports below.";
-			ViewData["Trainer-List"] = ($"{model.Trainer_names}");
 			return View();
 		}
 

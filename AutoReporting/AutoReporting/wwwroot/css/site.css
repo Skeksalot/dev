@@ -6,32 +6,148 @@ html {
 }
 
 body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+	padding-top: 50px;
+	padding-bottom: 0px;
 	margin-bottom: 60px;
+	font-family: Mont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Window resizing for eLearning management with user lists */
+@media (min-width: 768px) {
+	body.pluralsight div.body-content, body.linkedin div.body-content {
+		width: 750px;
+	}
+}
+
+@media (min-width: 868px) {
+	body.pluralsight div.body-content, body.linkedin div.body-content {
+		width: 850px;
+	}
+}
+
+@media (min-width: 992px) {
+	body.pluralsight div.body-content, body.linkedin div.body-content {
+		width: 950px;
+	}
+}
+
+@media (min-width: 1200px) {
+	body.pluralsight div.body-content, body.linkedin div.body-content {
+		width: 1170px;
+	}
+}
+
+@media (min-width: 1400px) {
+	body.pluralsight div.body-content, body.linkedin div.body-content {
+		width: 1370px;
+	}
+}
+
+@media (min-width: 1600px) {
+	body.pluralsight div.body-content, body.linkedin div.body-content {
+		width: 1570px;
+	}
+}
+
+@media (min-width: 1800px) {
+	body.pluralsight div.body-content, body.linkedin div.body-content {
+		width: 1770px;
+	}
 }
 
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+/* Navbar stuff, includes dropdown */
+.navbar-brand {
+	font-size: 20px;
+	padding: 11px 15px;
+}
+
+.navbar-logo {
+	display: inline;
+	padding-right: 0.5em;
+	max-height: 1.4em;
+}
+
+.navbar-inverse .navbar-nav > li > a, .navbar-inverse .navbar-brand {
+	color: #aaaab4;
+}
+
+.navbar-fixed-top {
+	border: none;
+}
+
+.nav li > a, .dropdown-header {
+	display: inline-block;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	min-height: 50px;
+}
+
+.dropdown-header {
+	font-size: 14px;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover, .dropdown:hover .dropdown-header {
+	background-color: #2c2c36;
+	color: #ffffff;
+}
+
+.dropdown-menu {
+	display: none;
+	position: absolute;
+	background-color: #f6f6fa;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	z-index: 1;
+	padding: 0;
+	border: none;
+	min-width: -webkit-fill-available;
+	min-width: -moz-available;
+}
+
+.dropdown-menu a {
+	color: #000000;
+	padding: 14px 16px;
+	text-decoration: none;
+	text-align: left;
+	display: block;
+	text-align: left;
+	width: -webkit-fill-available;
+	width: -moz-available;
+}
+
+.dropdown-menu a:hover {
+	background-color: #ffffff;
+}
+
+.dropdown:hover .dropdown-menu {
+	display: block;
+}
+
+.dropdown-menu > a {
+	font-size: 12px;
 }
 
 /* Carousel */
 .carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+	font-size: 20px;
+	line-height: 1.4;
 }
 
 /* Make .svg files in the carousel display properly in older browsers */
 .carousel-inner .item img[src$=".svg"] {
-    width: 100%;
+	width: 100%;
 }
 
 /* QR code generator */
 #qrCode {
-    margin: 15px;
+	margin: 15px;
 }
 
 /* Hide/rearrange for smaller screens */
@@ -40,12 +156,6 @@ body {
     .carousel-caption {
         display: none;
     }
-}
-
-.navbar-logo {
-	display: inline;
-	padding-right: 0.5em;
-	max-height: 1.4em;
 }
 
 p.footer-links {
@@ -94,16 +204,8 @@ iframe.report-iframe {
 	height: 2.4em;
 }
 
-.footer-icon-container {
-	padding: 0 20em;
-}
-
 .footer-icon:hover {
 	opacity: 0.5;
-}
-
-body {
-	padding-bottom: 0em;
 }
 
 .download-progress-bar {
@@ -159,32 +261,46 @@ body {
 	display: none;
 }
 
-/* Pluralsight management section */
+/* eLearning management section */
+.users-container {
+	height: 640px;
+	width: 100%;
+	overflow: auto;
+	resize: vertical;
+	font-size: 12px;
+}
 
-.ps-logo {
+.ps-logo, .li-logo {
 	max-width: 50px;
 	max-height: 50px;
 	margin-right: 8px;
 }
 
-table.pluralsight-users th {
+table.pluralsight-users, table.linkedin-users {
+	width: 100%;
+}
+
+table.pluralsight-users th, table.linkedin-users th {
 	padding: 1em 0.5em;
 	background-color: #1548e0;
 	color: #ffffff;
+	font-size: 14px;
+	text-align: center;
 }
 
-table.pluralsight-users td {
-	padding: 0.5em;
+table.pluralsight-users td, table.linkedin-users td {
+	padding: 5px 10px;
 }
 
-table.pluralsight-users tr:nth-child(even) {
+table.pluralsight-users tr:nth-child(even), table.linkedin-users tr:nth-child(even) {
 	background-color: #f6f6fa;
 }
 
-table.pluralsight-users tr:not(:first-child):hover {
+table.pluralsight-users tr:not(:first-child):hover, table.linkedin-users tr:not(:first-child):hover {
 	background-color: rgba(170, 170, 180, 0.6);
 }
 
+/* LIVECHAT */
 #chatContainer[class~=lc-max] {
 	width: calc(400px - 16px);
 	height: calc(450px - 16px);

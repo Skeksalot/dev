@@ -8,28 +8,29 @@ using AutoReporting.Models;
 
 namespace AutoReporting.Controllers
 {
-	[Route("Pluralsight")]
-    public class PluralsightController : Controller
+	[Route("Linkedin")]
+    public class LinkedinController : Controller
     {
 		[HttpGet]
-		public IActionResult Pluralsight()
+		public IActionResult Linkedin()
 		{
 
-			ViewData["Message"] = "Pluralsight User Management. Uses the Pluralsight License Management API to manage users.";
+			ViewData["Message"] = "LinkedIn Learning User Management. Uses their API to manage users.";
 
 			return View();
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Pluralsight(PluralsightModel model)
+		public async Task<IActionResult> Linkedin(LinkedinModel model)
 		{
 
-			ViewData["Message"] = "Pluralsight User Management. Uses the Pluralsight License Management API to manage users. (Post)";
-			await model.OnGet();
+			ViewData["Message"] = "LinkedIn Learning User Management. Uses their API to manage users. (Post)";
+			/*await model.OnGet();
+			//ViewData["Response"] = model.users.data.Count + "\r\n" + model.users.data[0].toString() + "\r\n" + model.result;
 			ViewData["Response"] = model.users.toString();
 			ViewData["UserList"] = model.users.data;
 			ViewData["Update"] = DateTime.Now;
-			model.users.data.Sort();
+			model.users.data.Sort();*/
 			return View();
 		}
 

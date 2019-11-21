@@ -1,7 +1,4 @@
-﻿@model LMS_ReportsModel
-@{
-	ViewData["Title"] = "LMS Reports";
-}
+﻿@model LMSModel
 
 <script>
 	// Forward declarations for later used functions. These are implemented in site.js
@@ -15,46 +12,49 @@
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
 
-<!--
-<div class="row">
-	<div class="col">
-		<input id="trainer-list" type="text" name="Trainer_Names" placeholder="Individual Trainers" title="List specific trainers to retrive reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" value="" required autofocus />
-		<button type="button" name="Download_Selected_Reports" onclick="DownloadSelected()">Download Trainer Report</button>
-		<br />
-		<span>*Note: The trainer list should contain letters and spaces, individual trainers need to be separated by commas.</span>
-		<br /><br />
-		<button type="button" name="Download_All_Reports" onclick="DownloadAll()">Download All Trainer Reports</button>
-		<a id="download" href="" hidden></a>
-	</div>
-</div>
-<hr />
--->
 <div id="progressOuter" class="progress" style="display: none;">
 	<div id="progress" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
 		0%
 	</div>
 </div>
 
-<!--
-<div class="row">
-	<form asp-action="LMS_Reports" asp-controller="Home" method="post">
-		<input type="text" placeholder="Individual Trainers" title="List specific trainers to retrieve reports for. (Names separated by commas)" pattern="[A-Za-z ,]*" asp-for="Trainer_names" class="form-control" required autofocus />
-		<button type="submit" value="Download_Selected" class="btn btn-default">Download Trainer Report</button>
-		<br />
-		<span>*Note: The trainer list should contain letters and spaces, individual trainers need to be separated by commas.</span>
-	</form>
-	<br /><br />
-	<form asp-action="LMS_Reports" asp-controller="Home" method="post">
-		<input type="text" asp-for="Trainer_names" value="" pattern="[A-Za-z ,]*" class="form-control hidden" hidden />
-		<button type="submit" value="Download_All" class="btn btn-default">Download All Trainer Reports</button>
-	</form>
-</div>
-<hr />
--->
 <div id="LMS" class="row">
-	<button class="btn-block btn-generic btn-lms">Login to LMS</button>
+	<div class="col-sm-12" style="word-wrap: break-word;">
+		@{
+			string cook = string.Format("{0}<br>", this.Context.Request.Cookies.Count);
+			foreach (var i in this.Context.Request.Cookies.ToArray())
+			{
+				cook = cook + i.Key + ":" + i.Value + "<br>";
+			}
+			<p>Cookies: @Html.Raw(cook)</p>
+			<p>From: @Html.Raw(ViewData["BeforeRedirect"])</p>
+			<hr />
+			@Html.Raw(ViewData["Response"])
+						
+			<hr />
+			if (this.Context.Request.Cookies.ContainsKey("MoodleSession"))
+						{
+				<form asp-action="LMS_Reporting" asp-controller="LMS" method="get">
+					<input name="report" type="text" value="1" hidden style="display: none;" />
+					<button type="submit" value="Download Unmarked" class="btn btn-default">Download All Trainer Reports</button>
+				</form>
+				// Delete cookie after 'logging in' (for testing)
+				this.Context.Response.Cookies.Delete("MoodleSession");
+			}
+			else
+			{
+				<form asp-action="LMS_Reporting" asp-controller="LMS" method="post" asp-antiforgery="false">
+					<p>Use your LMS login credentials to authenticate before accessing a report.</p>
+					<label for="username">Username: <input name="username" required type="text" maxlength="128" placeholder="Your LMS username" autocomplete="off" /></label>
+					<label for="password">Password: <input name="password" required type="password" maxlength="128" placeholder="Your LMS password" autocomplete="off" /></label>
+					<button type="submit" value="login" class="btn btn-default">Login with LMS</button>
+				</form>
+			}
+		}
+	</div>
 </div>
 <hr />
+<!--
 <div class="row">
 	<div class="row">
 		<div id="LMS" class="col-sm-12">
@@ -135,13 +135,6 @@
 			}
 
 		</script>
-	</div>
-</div>
-
-<!--
-<div class="row">
-	<div class="col">
-		<iframe src="https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181&courseid=1" name="_LMS" class="report-iframe"></iframe>
 	</div>
 </div>
 -->

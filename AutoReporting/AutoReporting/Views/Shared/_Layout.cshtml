@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+	<link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet">
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - AutoReporting</title>
@@ -31,10 +32,22 @@
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-					<li><a asp-area="" asp-controller="Home" asp-action="LMS_Reports">LMS Reports</a></li>
-					<li><a asp-area="" asp-controller="Pluralsight" asp-action="Pluralsight">Pluralsight</a></li>
-					<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-					<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+					<li class="dropdown">
+						<a href="javascript:void(0);" class="dropdown-header">LMS</a>
+						<div class="dropdown-menu">
+							<a asp-area="" asp-controller="LMS" asp-action="LMS_Reporting">Reporting</a>
+							<a asp-area="" asp-controller="LMS" asp-action="LMS_Reporting">User Management</a>
+							<a asp-area="" asp-controller="LMS" asp-action="LMS_Reporting">Content Management</a>
+							<a asp-area="" asp-controller="LMS" asp-action="LMS_Reporting">Course Management</a>
+						</div>
+					</li>
+					<li class="dropdown">
+						<a href="javascript:void(0);" class="dropdown-header">eLearning Management</a>
+						<div class="dropdown-menu">
+							<a asp-area="" asp-controller="Pluralsight" asp-action="Pluralsight">Pluralsight</a>
+							<a asp-area="" asp-controller="Linkedin" asp-action="Linkedin">LinkedIn Learning</a>
+						</div>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -55,7 +68,8 @@
 				<div class="col-sm-3">
 					<a href="https://www.upskilled.edu.au" target="_blank" class="footer-logo"><img src="~/images/Wordmark secondary on black.png" alt="Upskilled Logo and link to upskilled.edu.au" class="footer-logo" /></a>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-2">
 					<div class="row footer-icon-container">
 						<div class="col-sm-3">
 							<a href="https://lms.upskilled.edu.au" target="_blank" title="LMS"><img src="~/images/Secondary gradient.png" class="footer-icon" alt="Link to Upskilled LMS" /></a>
@@ -71,18 +85,20 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-sm-2"></div>
 				<div class="col-sm-3">
-					<p class="copyright">&copy; 2019 - Andrew Skeklios</p>
+					<p class="copyright">&copy; @DateTime.Now.Year.ToString() - Andrew Skeklios</p>
 				</div>
 			</div>
 		</div>
 	</footer>
 
-	<!--Start of LiveChat(www.livechatinc.com) code-->
-	
-	<!-- Manual method of generating a second chat window -->
+	<!-- Start of LiveChat(www.livechatinc.com) code -->
+
+	<!--
 	<div id="chatContainer" class="lc-min">
 		<script>
+			// Manual method of generating a second chat window
 			// Function to minimise and maximise the trainer chat
 			function toggleLC() {
 				if (document.getElementById('chatIframe').classList.contains('lc-min')) {
@@ -101,8 +117,8 @@
 					document.getElementById('chatInnerBubble').style.display = 'block';
 				}
 			}
+		// Create bubble to display initially, onclick reveal Iframe containing trainer chat
 		</script>
-		<!-- Create bubble to display initially, onclick reveal Iframe containing trainer chat -->
 
 		<div id="chatBubble" class="lc-max" onclick="toggleLC();" title="Ask a trainer">
 			<svg id="chatInnerBubble" width="28px" height="28px" viewBox="0 0 28 28" class="lc-svg" style="position: absolute; top: 16px; right: 16px;">
@@ -114,82 +130,8 @@
 			</svg>
 		</div>
 		<iframe id="chatIframe" class="lc-min" src="https://lc.chat/now/2673501/4">LiveChat</iframe>
-		<!--<iframe id="chatIframe" class="lc-min" src="https://lc.chat/now/2673501/5">LiveChat</iframe>
-		<iframe id="chatIframe" class="lc-min" src="https://lc.chat/now/2673501/3">LiveChat</iframe>-->
 		<div id="chatMinimise" onclick="toggleLC();" title="Minimise chat window"></div>
 	</div>
-
-
-	<!--
-	<script type="text/javascript" async="" src="https://cdn.livechatinc.com/tracking.js"></script>
-	<div id="chatContainer" style="opacity: 1; visibility: visible; z-index: 2147483639; position: fixed; bottom: 0px; max-width: 100%; max-height: calc(100% - 0px); min-height: 0px; min-width: 0px; background-color: transparent; border: 0px; overflow: hidden; right: 80px; transition: none 0s ease 0s !important;">
-		<iframe id="chatIframe" src="~/html/livechat.html" srcdoc="<script>window.__lc = window.__lc || {}; window.__lc.license = 2673501; window.__lc.chat_between_groups = false; window.__lc.group = 5; (function() { var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true; lc.src = 'https://cdn.livechatinc.com/tracking.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s); })();</script>" style="width: inherit; height: inherit; margin: 0px; padding: 0px; background-image: none; background-position: 0% 0%; background-size: initial; background-attachment: scroll; background-origin: initial; background-clip: initial; background-color: rgba(0, 0, 0, 0); border-width: 0px; float: none; transition: none 0s ease 0s !important;"></iframe>
-	</div>
-	
-	<script type="text/javascript" async="" src="https://cdn.livechatinc.com/tracking.js"></script>
-	<div id="chatContainer" style="opacity: 1; visibility: visible; z-index: 2147483639; position: fixed; bottom: 0px; max-width: 100%; max-height: calc(100% - 0px); min-height: 0px; min-width: 0px; background-color: transparent; border: 0px; overflow: hidden; right: 160px; transition: none 0s ease 0s !important;">
-		<iframe id="chatIframe" src="https://secure.livechatinc.com/licence/g2673501_2/v2/open_chat.cgi?license=2673501&group=5&embedded=1&widget_version=3&unique_groups=1" style="width: inherit; height: inherit; margin: 0px; padding: 0px; background-image: none; background-position: 0% 0%; background-size: initial; background-attachment: scroll; background-origin: initial; background-clip: initial; background-color: rgba(0, 0, 0, 0); border-width: 0px; float: none; transition: none 0s ease 0s !important;"></iframe>
-	</div>
-	-->
-
-	<script>
-		// POLLING METHOD TO SET CORRECT SIZING FOR SECOND LIVECHAT
-		/*let refresh = setInterval(() => {
-			var container = chatIframe.contentDocument.getElementById('chat-widget-container');
-			if (container != null) {
-				chatIframe.style.width = container.style.width;
-				chatIframe.style.height = container.style.height;
-				document.getElementById('chatContainer').style.width = container.style.width;
-				document.getElementById('chatContainer').style.height = container.style.height;
-				//document.getElementById("count").innerHTML = 'Outer: ' + chatIframe.style.width + ', ' + chatIframe.style.height + '<br>Inner: ' + container.style.width + ', ' + container.style.height;
-			} else { }
-		}, 100);*/
-
-		/* *** TEST JUNK FOR SECOND LIVECHAT ***
-
-		function resizeChatIframe(name, minSize, x, y) {
-			alert("resize");
-			var chat = document.getElementById(name);
-			if ( (chat.height > minSize) || (chat.width > minSize)) {
-				// needs to be minimised
-				chat.width = minSize;
-				chat.height = minSize;
-			} else {
-				// already minimised, maximise it
-				chat.width = x;
-				chat.height = y;
-			}
-			return;
-		}
-		function resizeChat(name, x, y) {
-			alert("other resize");
-			var chat = document.getElementById(name);
-			chat.width = x;
-			chat.height = y;
-			return;
-		}
-
-		let oldDoc = chatIframe.contentDocument;
-		// every 100 ms check if the document is the new one
-		let timer = setInterval(() => {
-			if (chatIframe.contentDocument == oldDoc) return;
-
-			//window.top.alert('trigger');
-			chatIframe.width = chatIframe.contentDocument.chat-widget.width;
-			// new document, let's set handlers
-			chatIframe.contentDocument.addEventListener('DOMContentLoaded', () => {
-				chatIframe.contentDocument.body.prepend('Hello, world!');
-			});
-			//chatIframe.addEventListener("DOMContentLoaded", function () { document.getElementById("chatIframe").contentDocument.getElementById("chat-widget").addEventListener("mousedown", function () { if (document.getElementById("chat-widget").height > 84) { window.top.postMessage("minimise", "*"); } else { window.top.postMessage("maximise", "*"); } }) });
-
-			clearInterval(timer); // cancel setInterval, don't need it any more
-		}, 100);
-		//chatIframe.addEventListener("DOMContentLoaded", function () { document.getElementById("chatIframe").contentWindow.document.getElementById("chat-widget").addEventListener("mousedown", function () { if (document.getElementById("chat-widget").height > 84) { window.top.postMessage("minimise", "*"); } else { window.top.postMessage("maximise", "*"); } }) });
-		//chatIframe.addEventListener("message", function (event) { if (event.data == "minimise") { resizeChat("chatContainer", 84, 84) } else if (event.data == "maximise") { resizeChat("chatContainer", 400, 450) } });
-
-		*** END OF TEST JUNK *** */
-
-	</script>
 
 	<script type="text/javascript">
 
@@ -208,7 +150,7 @@
 		})();
 
 	</script>
-
+	-->
 	<!-- End of LiveChat code -->
 
 	@RenderSection("Scripts", required: false)

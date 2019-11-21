@@ -1,0 +1,102 @@
+﻿@model LinkedinModel
+@{
+	ViewData["Title"] = "LinkedIn Learning Manager";
+}
+
+<script>
+	document.body.classList.add("linkedin");
+</script>
+
+<h2><img class="li-logo" src="https://static-exp1.licdn.com/sc/h/444zstxv7s91nepfm5et6ofge" alt="Linkedin Learning Logo">@ViewData["Title"]</h2>
+<h4>@ViewData["Message"]</h4>
+<hr />
+<!--
+	DETAIL FOR LINKEDIN LEARNING
+	https://docs.microsoft.com/en-us/linkedin/learning/overview/
+
+	Can be used for:
+		Retrieve a page of learning assets, given some criteria.
+		Retrieve an individual learning asset, given an URN.
+		Retrieve a page of learning classifications, given some criteria.
+		Retrieve an individual learning classification, given an URN.
+		Retrieve a page of learning assets, given some search and relevance criteria.
+		Retrieve a list of learning assets updated since a given date.
+		Retrieve a page of learning classifications, given a keyword.
+
+	Client ID: 86v05nold03qcb
+	Client Secret: hMJ4tstceOPwXt3A
+
+	Separate Learning Activity Reporting API
+	https://docs.microsoft.com/en-us/linkedin/learning/reference/learningactivityreports
+
+	Currently marked as Beta, scheduled for major change in May 2020
+-->
+@{
+	List<LinkedinUser> users = ViewData["UserList"] as List<LinkedinUser>;
+	DateTime lastUpdate = DateTime.Now;
+	if( ViewData["Update"] != null)
+	{
+		lastUpdate = (DateTime)ViewData["Update"];
+	}
+}
+<div class="row">
+	<div class="col-sm-3">
+		<div class="row">
+			<div class="col-sm-12">
+				@{
+					if (users == null)
+					{
+						<form asp-action="Linkedin" asp-controller="Linkedin" method="post">
+							<button id="getUsers" type="submit" class="btn btn-default">Download LinkedIn Learning User List</button>
+						</form>
+					}
+					else
+					{
+						<form asp-action="Linkedin" asp-controller="Linkedin" method="post">
+							<button id="getUsers" type="submit" class="btn btn-default">Update User List</button>
+						</form>
+						<span>Total User Count: @users.Count (/4000)<br />Last update: @lastUpdate.ToString()</span>
+					}
+				}
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-9">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="users-container">
+					<table class="pluralsight-users">
+						<tr>
+							<th>Firstname</th>
+							<th>Lastname</th>
+							<th>Email</th>
+							<th>User ID</th>
+							<th>Start Date</th>
+							<th>Team ID</th>
+							<th>Notes</th>
+						</tr>
+						@{
+							if (users != null)
+							{
+
+								@foreach (LinkedinUser u in users)
+								{
+									<tr>
+										<td>@u.firstName</td>
+										<td>@u.lastName</td>
+										<td>@u.email</td>
+										<td>@u.id</td>
+										<td>@u.startDate</td>
+										<td>@u.teamId</td>
+										<td>@u.note</td>
+									</tr>
+								}
+
+							}
+						}
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

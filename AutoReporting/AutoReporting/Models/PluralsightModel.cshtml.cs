@@ -11,40 +11,22 @@ using Newtonsoft.Json;
 
 namespace AutoReporting.Models
 {
-    public class Pluralsight_Model : PageModel
+    public class PluralsightModel : PageModel
     {
-		private WebRequest client { get; set; }
 		private HttpClient httpClient { get; set; } 
 		public string result { get; set; }
 		public UserList<PluralsightUser> users { get; set; }
 		private readonly IHttpClientFactory clientFactory;
 
-		public Pluralsight_Model()
+		public PluralsightModel()
 		{
-			client = WebRequest.Create("https://app.pluralsight.com/plan-analytics-api/reports/upskilled/user/all/download?range=all");
 			users = new UserList<PluralsightUser>();
 		}
 
-		public Pluralsight_Model(IHttpClientFactory httpClientFactory)
+		public PluralsightModel(IHttpClientFactory httpClientFactory)
 		{
 			clientFactory = httpClientFactory;
 			users = new UserList<PluralsightUser>();
-		}
-
-		public void GetUsersAsync()
-		{
-			
-			WebResponse response = client.GetResponse();
-			using (Stream dataStream = response.GetResponseStream())
-			{
-				// Open the stream using a StreamReader for easy access. 
-				StreamReader reader = new StreamReader(dataStream);
-				// Read the content. 
-				string responseFromServer = reader.ReadToEnd();
-				// Display the content. 
-				result = "Received:\n" + responseFromServer;
-			}
-			response.Close();
 		}
 
 		public async Task OnGet()
