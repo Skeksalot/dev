@@ -1,22 +1,16 @@
 ﻿@model LMSModel
-
-<script>
-	// Forward declarations for later used functions. These are implemented in site.js
-	function checkboxStateHandler(checkBox, container) {}
-	function getSelectedTrainers() {}
-	function allTrainers() {}
-	function clearTrainers() {}
-	function downloadReports() {}
-</script>
-
-<h2>@ViewData["Title"]</h2>
+@{
+	string check;
+	if(this.Context.Request.Cookies.TryGetValue("MoodleSession", out check))
+	{
+		if(check == LMSModel.MooSessTestVal)
+		{
+			this.Context.Response.Cookies.Delete("MoodleSession");
+		}
+	}
+}
+<h2><img class="lms-logo" src="~/images/Secondary gradient.png" alt="Upskilled LMS Logo">@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
-
-<div id="progressOuter" class="progress" style="display: none;">
-	<div id="progress" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-		0%
-	</div>
-</div>
 
 <div id="LMS" class="row">
 	<div class="col-sm-12" style="word-wrap: break-word;">
@@ -29,11 +23,12 @@
 			<p>Cookies: @Html.Raw(cook)</p>
 			<p>From: @Html.Raw(ViewData["BeforeRedirect"])</p>
 			<hr />
-			@Html.Raw(ViewData["Response"])
-						
+			//@Html.Raw(ViewData["Response"])
+			@Html.DisplayText((string)ViewData["Response"])
+
 			<hr />
 			if (this.Context.Request.Cookies.ContainsKey("MoodleSession"))
-						{
+			{
 				<form asp-action="LMS_Reporting" asp-controller="LMS" method="get">
 					<input name="report" type="text" value="1" hidden style="display: none;" />
 					<button type="submit" value="Download Unmarked" class="btn btn-default">Download All Trainer Reports</button>
@@ -43,7 +38,7 @@
 			}
 			else
 			{
-				<form asp-action="LMS_Reporting" asp-controller="LMS" method="post" asp-antiforgery="false">
+				<form asp-action="LMS_Reporting" asp-controller="LMS" method="post">
 					<p>Use your LMS login credentials to authenticate before accessing a report.</p>
 					<label for="username">Username: <input name="username" required type="text" maxlength="128" placeholder="Your LMS username" autocomplete="off" /></label>
 					<label for="password">Password: <input name="password" required type="password" maxlength="128" placeholder="Your LMS password" autocomplete="off" /></label>
@@ -54,87 +49,3 @@
 	</div>
 </div>
 <hr />
-<!--
-<div class="row">
-	<div class="row">
-		<div id="LMS" class="col-sm-12">
-			<button class="btn-block btn-generic btn-sel" onclick="downloadReports();">Download Selected Reports</button>
-		</div>
-	</div>
-	<div class="row">
-		<div id="SelectAll" class="col-sm-6">
-			<button class="btn-block btn-generic btn-lms" onclick="allTrainers();">Select All</button>
-		</div>
-		<div id="SelectNone" class="col-sm-6">
-			<button class="btn-block btn-generic btn-clr" onclick="clearTrainers();">Clear Selection</button>
-		</div>
-	</div>
-	<div id="individual-reports" class="row">
-		<div id="BUS" class="col-sm-4"></div>
-		<div id="CHC" class="col-sm-4"></div>
-		<div id="ICT" class="col-sm-4"></div>
-		<script>
-
-			var bus = document.getElementById('BUS');
-			var chc = document.getElementById('CHC');
-			var ict = document.getElementById('ICT');
-			// Change this string to whatever database/list storage method used
-			var busNames = ['Jay Bakshi', 'Zaiba Khan'];
-			var chcNames = ['Cat Sorensen-Clark'];
-			var ictNames = ['Charles Lang-Ashe', 'Vikram Mangla', 'Matthew Roderick', 'Fiona Stray'];
-			// Calculate the longest list of trainers to iterate over
-			var longest = Math.max(busNames.length, Math.max(chcNames.length, ictNames.length));
-			for (var i = 0; i < longest; i++) {
-
-				// Create button and append to correct faculty column
-				if (i < busNames.length) {
-					// input is the internal state holder (a hidden checkbox)
-					var input = document.createElement('input');
-					var identifier = busNames[i].trim().replace(' ', '_');
-					input.id = identifier + 'State';
-					input.type = 'checkbox';
-					input.name = identifier;
-					input.className = 'state';
-					// btn is the div which acts as the button
-					var btn = document.createElement('div');
-					btn.className = 'btn-generic btn-bus';
-					// Handler triggers off click event, is passed both the target and its checkbox
-					btn.addEventListener('click', function (event) { checkboxStateHandler(event.target.getElementsByTagName('input')[0], event.target); });
-					btn.innerHTML = busNames[i].trim();
-					btn.appendChild(input);
-					bus.appendChild(btn);
-				}
-				if (i < chcNames.length) {
-					var input = document.createElement('input');
-					var identifier = chcNames[i].trim().replace(' ', '_');
-					input.id = identifier + 'State';
-					input.type = 'checkbox';
-					input.name = identifier;
-					input.className = 'state';
-					var btn = document.createElement('div');
-					btn.className = 'btn-generic btn-chc';
-					btn.addEventListener('click', function (event) { checkboxStateHandler(event.target.getElementsByTagName('input')[0], event.target); });
-					btn.innerHTML = chcNames[i].trim();
-					btn.appendChild(input);
-					chc.appendChild(btn);
-				}
-				if (i < ictNames.length) {
-					var input = document.createElement('input');
-					var identifier = ictNames[i].trim().replace(' ', '_');
-					input.id = identifier + 'State';
-					input.type = 'checkbox';
-					input.name = identifier;
-					input.className = 'state';
-					var btn = document.createElement('div');
-					btn.className = 'btn-generic btn-ict';
-					btn.addEventListener('click', function (event) { checkboxStateHandler(event.target.getElementsByTagName('input')[0], event.target); });
-					btn.innerHTML = ictNames[i].trim();
-					btn.appendChild(input);
-					ict.appendChild(btn);
-				}
-			}
-
-		</script>
-	</div>
-</div>
--->

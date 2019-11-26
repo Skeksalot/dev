@@ -158,6 +158,11 @@ body {
     }
 }
 
+.error {
+	color: red;
+	font-weight: bold;
+}
+
 p.footer-links {
 	text-align: right;
 }
@@ -270,7 +275,7 @@ iframe.report-iframe {
 	font-size: 12px;
 }
 
-.ps-logo, .li-logo {
+.ps-logo, .li-logo, .lms-logo {
 	max-width: 50px;
 	max-height: 50px;
 	margin-right: 8px;

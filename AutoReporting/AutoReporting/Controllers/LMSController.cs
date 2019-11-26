@@ -14,28 +14,77 @@ using System.Web;
 
 namespace AutoReporting.Controllers
 {
-	[Route("LMS")]
 	public class LMSController : Controller
 	{
 		[HttpGet]
-		public async Task<IActionResult> LMS_Reporting(LMSModel model)
+		public IActionResult Index(LMSModel model)
 		{
+			// Double check authorisation
 			if (HttpContext.Request.Cookies.ContainsKey("MoodleSession"))
 			{
-				// Make request for report from LMS
-				//await model.Retrieve_Report(HttpContext.Session.GetString("MoodleSession"));
-
+				// User is already authorised, display page
+				ViewData["Title"] = "LMS Reporting";
+				ViewData["Message"] = "Access to the LMS reports below.";
+				return View(model);
 			}
 			else
 			{
-				// Not logged in via LMS
-
+				// Not logged in via LMS, send on to login
+				ViewData["Error"] = "You must be logged in via LMS to view this page. Please log in below.";
+				return View("Login", model);
 			}
+		}
 
-			ViewData["Title"] = "LMS Reporting";
-			ViewData["Message"] = "Access to the LMS reports below.";
-			//ViewData["Trainer-List"] = null;
-			return View(model);
+		[HttpGet]
+		public IActionResult LMS_Reporting(LMSModel model)
+		{
+			// Double check authorisation
+			if (HttpContext.Request.Cookies.ContainsKey("MoodleSession"))
+			{
+				// User is authorised
+				ViewData["Title"] = "LMS Reporting";
+				ViewData["Message"] = "Access to the LMS reports below.";
+				return View(model);
+			}
+			else
+			{
+				// Not logged in via LMS, send back to login
+				
+				ViewData["Error"] = "You must be logged in via LMS to view this page. Please log in below.";
+				return View("Login", model);
+			}
+		}
+
+		[HttpGet, HttpPost]
+		public async Task<IActionResult> Login(LMSModel model, string username, string password)
+		{
+			if(HttpContext.Request.Method == HttpMethod.Get.Method)
+			{
+				// Get, display login form
+				ViewData["Title"] = "Login via LMS";
+				ViewData["Message"] = "Use your LMS login credentials to authenticate before accessing the LMS management tools.";
+				return View(model);
+			}
+			else
+			{
+				// Post, attempt login
+				await LMS_Login(username.Trim(), password.Trim());
+				if (HttpContext.Request.Cookies.ContainsKey("MoodleSession"))
+				{
+					// Login succeded
+					ViewData["Title"] = "LMS Reporting";
+					ViewData["Message"] = "Access to the LMS reports below.";
+					return View("LMS_Reporting");
+				}
+				else
+				{
+					// Login failed
+					ViewData["Title"] = "Login via LMS";
+					ViewData["Error"] = "Login with LMS failed. Check your details and retry.";
+					return View(model);
+				}
+				
+			}
 		}
 
 		[HttpPost]
@@ -44,7 +93,7 @@ namespace AutoReporting.Controllers
 			// Validate login details (use equivalents for LMS)
 			if (!string.IsNullOrEmpty(username.Trim()) && !string.IsNullOrEmpty(password.Trim()))
 			{
-				HttpContext.Request.Cookies.Append(new KeyValuePair<string, string>("MoodleSession", "11111111111111"));
+				//HttpContext.Request.Cookies.Append(new KeyValuePair<string, string>("MoodleSession", "11111111111111"));
 				await LMS_Login(username.Trim(), password.Trim());
 				if (HttpContext.Request.Cookies.ContainsKey("MoodleSession"))
 				{
@@ -55,7 +104,7 @@ namespace AutoReporting.Controllers
 			}
 
 			//return RedirectToAction("LMS_Reporting", model);
-			return RedirectToAction("LMS_Reporting");
+			return View("LMS_Reporting", model);
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -69,6 +118,15 @@ namespace AutoReporting.Controllers
 		public async Task LMS_Login(string username, string password)
 		{
 			HttpClient httpClient = new HttpClient();
+			httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
+			httpClient.DefaultRequestHeaders.Add("Location", HttpContext.Request.Host.Value + HttpContext.Request.Path.Value);
+			/*httpClient.DefaultRequestHeaders.Add("Referer", HttpContext.Request.Host.Value + HttpContext.Request.Path.Value);
+			httpClient.DefaultRequestHeaders.Add("Origin", HttpContext.Request.Host.Value);
+			httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36");
+			httpClient.DefaultRequestHeaders.Date = DateTime.Now;
+			httpClient.DefaultRequestHeaders.GetCookies().Clear();
+			httpClient.DefaultRequestHeaders.GetCookies().Add(new System.Net.Http.Headers.CookieHeaderValue("MoodleSession", "00000000000000"));*/
+
 			StringBuilder url = new StringBuilder("https://lms.upskilled.edu.au/login/index.php");
 			//StringBuilder url = new StringBuilder("https://httpbin.org/post");
 			string extract;
@@ -80,11 +138,9 @@ namespace AutoReporting.Controllers
 
 			// Setting up request using HttpRequestMessage
 			var request = new HttpRequestMessage(HttpMethod.Post, url.ToString());
-			//request.Headers.Add("username", HttpUtility.UrlEncode(username));
-			//request.Headers.Add("password", HttpUtility.UrlEncode(password));
-			request.Headers.Add("Connection", "keep-alive");
-			request.Headers.Add("Location", "localhost:44349/LMS");
-			//request.Headers.Add("Location", HttpContext.Request.Host + HttpContext.Request.Path);
+			//request.Headers.Add("Connection", "keep-alive");
+			//request.Headers.Add("Location", "localhost:44349/LMS");
+			//request.Headers.Add("Location", HttpContext.Request.Host.Value + HttpContext.Request.Path.Value);
 			request.Content = content;
 			
 			// Executing request
@@ -96,7 +152,7 @@ namespace AutoReporting.Controllers
 			if (response.IsSuccessStatusCode)
 			{
 				// Success
-				string session = "";
+				string session;
 				try
 				{
 					// Test for successful login
@@ -120,14 +176,14 @@ namespace AutoReporting.Controllers
 				}
 
 				// For testing
-				session = "x0000000000000";
-				ViewData["BeforeRedirect"] = response.RequestMessage.Headers.Host + " : " + response.RequestMessage.Headers.From + " : " + response.RequestMessage.Headers.Referrer + " : " + response.RequestMessage.Headers.Via + " : " + response.RequestMessage.Headers.GetCookies().ToArray().ToString();
+				ViewData["BeforeRedirect"] = response.RequestMessage.Headers.Host + " : " + response.RequestMessage.Headers.GetValues("Location") + " : " + response.RequestMessage.Headers.From + " : " + response.RequestMessage.Headers.Referrer + " : " + response.RequestMessage.Headers.Via + " : " + response.RequestMessage.RequestUri.ToString();
 
 				// Set relevant fields
 				ViewData["Response"] = extract;
-				//HttpContext.Session.SetString("MoodleSession", session);
-				HttpContext.Response.Cookies.Append("MoodleSession", session);
-				/*HttpContext.Request.Cookies.Append(new KeyValuePair<string, string>("MoodleSession", session));
+				//HttpContext.Session.SetString("MoodleSession", LMSModel.MooSessTestVal);
+				HttpContext.Response.Cookies.Delete("MoodleSession");
+				HttpContext.Response.Cookies.Append("MoodleSession", LMSModel.MooSessTestVal);
+				/*HttpContext.Request.Cookies.Append(new KeyValuePair<string, string>("MoodleSession", LMSModel.MooSessTestVal));
 				if (response.Headers.Contains("cookie"))
 				{
 					foreach (var i in response.Headers.GetValues("cookie"))
@@ -135,7 +191,7 @@ namespace AutoReporting.Controllers
 						HttpContext.Response.Cookies.Append("cookie", i);
 					}
 				}*/
-				
+
 			}
 			else
 			{

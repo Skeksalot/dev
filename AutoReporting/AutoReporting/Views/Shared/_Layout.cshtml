@@ -17,7 +17,7 @@
 		<link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
 	</environment>
 </head>
-<body class="category-9">
+<body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
@@ -33,12 +33,12 @@
 				<ul class="nav navbar-nav">
 					<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
 					<li class="dropdown">
-						<a href="javascript:void(0);" class="dropdown-header">LMS</a>
+						<a asp-area="" asp-controller="LMS" asp-action="Login" class="dropdown-header">LMS</a>
 						<div class="dropdown-menu">
-							<a asp-area="" asp-controller="LMS" asp-action="LMS_Reporting">Reporting</a>
-							<a asp-area="" asp-controller="LMS" asp-action="LMS_Reporting">User Management</a>
-							<a asp-area="" asp-controller="LMS" asp-action="LMS_Reporting">Content Management</a>
-							<a asp-area="" asp-controller="LMS" asp-action="LMS_Reporting">Course Management</a>
+							<a asp-area="" asp-controller="LMS" asp-action="Login">Reporting</a>
+							<a asp-area="" asp-controller="LMS" asp-action="Login">User Management</a>
+							<a asp-area="" asp-controller="LMS" asp-action="Login">Content Management</a>
+							<a asp-area="" asp-controller="LMS" asp-action="Login">Course Management</a>
 						</div>
 					</li>
 					<li class="dropdown">

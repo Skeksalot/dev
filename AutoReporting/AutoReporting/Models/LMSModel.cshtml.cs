@@ -12,9 +12,8 @@ namespace AutoReporting.Models
 {
     public class LMSModel : PageModel
     {
-		public string Trainer_names { get; set; }
+		public const string MooSessTestVal = "x0000000000000";
 		private HttpClient httpClient { get; set; }
-		public string session { get; set; }
 		public string token { get; set; }
 		private string result { get; set; }
 		public string extract { get; set; }

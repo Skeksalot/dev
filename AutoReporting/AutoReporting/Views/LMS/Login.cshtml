@@ -1,0 +1,15 @@
+﻿@model LMSModel
+
+<h2><img class="lms-logo" src="~/images/Secondary gradient.png" alt="Upskilled LMS Logo">@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+<h4 class="error">@ViewData["Error"]</h4>
+<hr />
+<div id="LMS" class="row">
+	<div class="col-sm-12" style="word-wrap: break-word;">
+		<form asp-action="Login" asp-controller="LMS" method="post" asp-antiforgery="false">
+			<label for="username">Username: <input name="username" required type="text" maxlength="128" placeholder="Your LMS username" autocomplete="off" /></label>
+			<label for="password">Password: <input name="password" required type="password" maxlength="128" placeholder="Your LMS password" autocomplete="off" /></label>
+			<button type="submit" value="login" class="btn btn-default">Login with LMS</button>
+		</form>
+	</div>
+</div>
