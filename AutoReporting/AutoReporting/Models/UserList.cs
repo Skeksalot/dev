@@ -41,7 +41,7 @@ namespace AutoReporting.Models
 			}
 		}
 
-		public string toString()
+		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
 			foreach (User i in data) {

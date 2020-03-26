@@ -94,6 +94,10 @@ body {
 	font-size: 14px;
 }
 
+.dropdown-header.no-link {
+	cursor: default;
+}
+
 .navbar-inverse .navbar-nav > li > a:hover, .dropdown:hover .dropdown-header {
 	background-color: #2c2c36;
 	color: #ffffff;

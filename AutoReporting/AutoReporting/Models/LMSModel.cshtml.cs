@@ -12,13 +12,14 @@ namespace AutoReporting.Models
 {
     public class LMSModel : PageModel
     {
-		public const string MooSessTestVal = "x0000000000000";
-		private HttpClient httpClient { get; set; }
+		//private HttpClient httpClient { get; set; }
+		public string username { get; set; }
+		public string password { get; set; }
 		public string token { get; set; }
-		private string result { get; set; }
+		//private string result { get; set; }
 		public string extract { get; set; }
 
-		public async Task Retrieve_Report(string moodle_session)
+		/*public async Task Retrieve_Report(string moodle_session)
 		{
 			if (string.IsNullOrEmpty(moodle_session))
 			{
@@ -90,6 +91,6 @@ namespace AutoReporting.Models
 			{
 				// Failure
 			}
-		}
+		}*/
 	}
 }

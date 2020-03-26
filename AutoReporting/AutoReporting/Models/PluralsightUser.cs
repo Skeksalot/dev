@@ -37,7 +37,7 @@ namespace AutoReporting.Models
 			}
 			else
 			{
-				return startDate.CompareTo(u.startDate);
+				return startDate.CompareTo(u.startDate); // Add proper logic for comparison
 			}
 		}
 

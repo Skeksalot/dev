@@ -1,17 +1,8 @@
 ﻿@model LMSModel
-@{
-	string check;
-	if(this.Context.Request.Cookies.TryGetValue("MoodleSession", out check))
-	{
-		if(check == LMSModel.MooSessTestVal)
-		{
-			this.Context.Response.Cookies.Delete("MoodleSession");
-		}
-	}
-}
+
 <h2><img class="lms-logo" src="~/images/Secondary gradient.png" alt="Upskilled LMS Logo">@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
-
+<p>@ViewData["LMS_Cookies"]</p>
 <div id="LMS" class="row">
 	<div class="col-sm-12" style="word-wrap: break-word;">
 		@{
@@ -21,9 +12,9 @@
 				cook = cook + i.Key + ":" + i.Value + "<br>";
 			}
 			<p>Cookies: @Html.Raw(cook)</p>
-			<p>From: @Html.Raw(ViewData["BeforeRedirect"])</p>
+			<p>From: @Html.Raw(ViewData["RedirectFrom"])</p>
 			<hr />
-			//@Html.Raw(ViewData["Response"])
+			@Html.Raw(ViewData["Response"])
 			@Html.DisplayText((string)ViewData["Response"])
 
 			<hr />
@@ -33,17 +24,11 @@
 					<input name="report" type="text" value="1" hidden style="display: none;" />
 					<button type="submit" value="Download Unmarked" class="btn btn-default">Download All Trainer Reports</button>
 				</form>
-				// Delete cookie after 'logging in' (for testing)
-				this.Context.Response.Cookies.Delete("MoodleSession");
 			}
 			else
 			{
-				<form asp-action="LMS_Reporting" asp-controller="LMS" method="post">
-					<p>Use your LMS login credentials to authenticate before accessing a report.</p>
-					<label for="username">Username: <input name="username" required type="text" maxlength="128" placeholder="Your LMS username" autocomplete="off" /></label>
-					<label for="password">Password: <input name="password" required type="password" maxlength="128" placeholder="Your LMS password" autocomplete="off" /></label>
-					<button type="submit" value="login" class="btn btn-default">Login with LMS</button>
-				</form>
+				<p>It seems you aren't logged in via LMS... Please go and login.</p>
+				<a asp-controller="LMS" asp-action="Login" class="btn btn-default" role="button">Take me to login</a>
 			}
 		}
 	</div>
