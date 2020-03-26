@@ -1,2 +1,3 @@
 #!/bin/bash
-
+#curl -X POST https://www.linkedin.com/oauth/v2/accessToken -d 'grant_type=client_credentials&client_id=868bu74udo5vcb&client_secret=Vvd4MyySaQhakOVy' -H 'Content-Type: application/x-www-form-urlencoded'
+curl -X GET 'https://api.linkedin.com/v2/learningActivityReports?aggregationCriteria.primary=INDIVIDUAL&aggregationCriteria.secondary=CONTENT&q=criteria&assetType=COURSE&startedAt=1564617600&timeOffset.duration=14&timeOffset.unit=DAY' -H 'Authorization: Bearer AQUeJ-OTuOM5l7hutA4nazRhYyd6AXpEK-he_fAlMf103__euXzMnNKrewArfGIJmO4xtC907SH1QthdKdIuPd7FyTXKYY81pXoRgsBaemTwQBWhIB1OBCQCWSG2s28WWW104zAxE8oHFN7A2lLU5TBNQyRGx_FiYV6CVdf8t6V6RdG572pIOKBL8noTA0qVqYKhp5oQH3K2t7dQCFNihKS2_anN04sH88dc2HKqfPeZ7IswECUKrN3Xe9RXyt7Z_WPTS4plDz3aNN5MwtCjtXv1SYg2IW8wrf7uHpFWeHAo1bTnaLt38lGiGMHPjBYXH6AAjjoDwnmoWAqyf5g'
