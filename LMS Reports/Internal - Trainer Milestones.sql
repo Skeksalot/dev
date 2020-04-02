@@ -1,6 +1,6 @@
 SELECT DISTINCT Trainer, Course, Student, Enrolment_Identifier, FROM_UNIXTIME(Last_Grade_Timestamp) Last_Grade, 
-	/*Assessments,*/
-	Completed_Assessment_Items, Total_Assessment_Items, ( Completed_Assessment_Items / Total_Assessment_Items ) * 100 Percent_Complete,
+	Assessments,
+	Completed_Assessment_Items, CT_Granted, Total_Assessment_Items, ( Completed_Assessment_Items / Total_Assessment_Items ) * 100 Percent_Complete,
 	CASE WHEN ( Completed_Assessment_Items >= 3 )
 		THEN 'Yes'
 		ELSE 'No'
@@ -19,25 +19,31 @@ FROM (
 		CONCAT('<a target="_new" href="%%WWWROOT%%/enrol/users.php', CHAR(63), 'id=', c.id, '">', c.shortname, '</a>') Course,
 		CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', Student.Sid, '">', Student.Sfirst, ' ', Student.Slast, '</a>' ) Student,
 		GROUP_CONCAT( DISTINCT CONCAT( '<a target="_new" href="%%WWWROOT%%/mod/',
-			CASE
-				WHEN cm.module = 13
-					THEN 'quiz/report.php'
-				WHEN cm.module = 15
-					THEN 'scorm/report.php'
-				WHEN cm.module = 21
-					THEN 'assign/view.php'
-				END, CHAR(63), 'id=', cm.id, '">', gi.itemname, ' - ', IFNULL(gg.finalgrade, 0), '</a><br>' ) ORDER BY cm.id  SEPARATOR '' ) Assessments,
+			CASE WHEN cm.module = 13
+				THEN 'quiz/report.php'
+			WHEN cm.module = 15
+				THEN 'scorm/report.php'
+			WHEN cm.module = 21
+				THEN 'assign/view.php'
+			END, CHAR(63), 'id=', cm.id, '">', gi.itemname, ' <b>(', 
+			CASE WHEN ( ug.id = Student.Sid AND gg.finalgrade IS NOT NULL )
+				THEN 'Auto '
+			WHEN gg.finalgrade IS NULL
+				THEN ''
+			ELSE IFNULL( CONCAT( ug.firstname, ' ', ug.lastname, ' ' ), '' )
+			END, IFNULL( gg.finalgrade, 'No Grade'), ')</b></a><br>' ) ORDER BY cm.id SEPARATOR '' ) Assessments,
 		COUNT(gi.iteminstance) Total_Assessment_Items,
-		SUM( CASE
-			WHEN (gg.finalgrade/gg.rawgrademax >= 0.70) 
-				THEN 1
-			ELSE 0 
-		END	) Completed_Assessment_Items,
+		SUM(
+		CASE WHEN ( gg.finalgrade / gg.rawgrademax >= 0.70 )
+			THEN 1
+		ELSE 0
+		END) Completed_Assessment_Items,
+		SUM(
+		CASE WHEN gg.finalgrade = 0
+			THEN 1
+		ELSE 0
+		END) CT_Granted,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
-		CASE
-			WHEN cc.timecompleted IS NOT NULL THEN 'Yes'
-			ELSE 'No'
-		END Completed_Course,
 		g.name Group_Name, c.id Cid,
 		GROUP_CONCAT( cm.availability SEPARATOR '\n' ) Restrictions,
 		CONCAT( Student.Sid, c.id ) Enrolment_Identifier
@@ -76,45 +82,52 @@ FROM (
 		AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
 	JOIN prefix_grade_items gi ON gi.courseid = c.id AND gi.itemtype = 'mod'
 	LEFT JOIN prefix_grade_grades gg ON gg.itemid = gi.id AND gg.userid = Student.Sid
+	LEFT JOIN prefix_user ug ON ug.id = gg.usermodified
 	LEFT JOIN prefix_course_modules cm ON cm.course = c.id AND cm.instance = gi.iteminstance
-	JOIN prefix_course_completions cc ON cc.userid = Student.Sid AND cc.course = c.id
 	LEFT JOIN prefix_groups_members gm ON gm.userid = Student.Sid
 	LEFT JOIN prefix_groups g ON g.id = gm.groupid AND g.courseid = c.id
 	
 	WHERE LOWER(gi.itemname) LIKE 'assessment%'
+	AND gi.itemname NOT LIKE 'Assessment - IT Foundations Course'
 	AND gi.hidden = 0
 	AND g.id IS NULL
 	AND cm.visible = 1
 	AND ( ( cm.availability IS NULL ) OR ( cm.availability LIKE CONCAT('%"op":"|","c"%', '{"type":"profile","sf":"email","op":"isequalto","v":"', Student.Email, '"}%') ) )
 	
-  	GROUP BY Student.Sid, c.id
+	GROUP BY Student.Sid, c.id
 	)
 	UNION
 	(
 	SELECT DISTINCT
-		GROUP_CONCAT( DISTINCT CONCAT(  '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', Trainer.Tid, '">', Trainer.Tfirst, ' ', Trainer.Tlast,  '</a>'  ) ) Trainer,
+		GROUP_CONCAT( DISTINCT CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', Trainer.Tid, '">', Trainer.Tfirst, ' ', Trainer.Tlast, '</a>' ) ) Trainer,
 		CONCAT('<a target="_new" href="%%WWWROOT%%/enrol/users.php', CHAR(63), 'id=', c.id, '">', c.shortname, '</a>') Course,
 		CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', Student.Sid, '">', Student.Sfirst, ' ', Student.Slast, '</a>' ) Student,
 		GROUP_CONCAT( DISTINCT CONCAT( '<a target="_new" href="%%WWWROOT%%/mod/',
-			CASE
-				WHEN cm.module = 13
-					THEN 'quiz/report.php'
-				WHEN cm.module = 15
-					THEN 'scorm/report.php'
-				WHEN cm.module = 21
-					THEN 'assign/view.php'
-				END, CHAR(63), 'id=', cm.id, '">', gi.itemname, ' - ', IFNULL(gg.finalgrade, 0), '</a><br>' ) ORDER BY cm.id  SEPARATOR '' ) Assessments,
+			CASE WHEN cm.module = 13
+				THEN 'quiz/report.php'
+			WHEN cm.module = 15
+				THEN 'scorm/report.php'
+			WHEN cm.module = 21
+				THEN 'assign/view.php'
+			END, CHAR(63), 'id=', cm.id, '">', gi.itemname, ' <b>(', 
+			CASE WHEN ( ug.id = Student.Sid AND gg.finalgrade IS NOT NULL )
+				THEN 'Auto '
+			WHEN gg.finalgrade IS NULL
+				THEN ''
+			ELSE IFNULL( CONCAT( ug.firstname, ' ', ug.lastname, ' ' ), '' )
+			END, IFNULL( gg.finalgrade, 'No Grade'), ')</b></a><br>' ) ORDER BY cm.id SEPARATOR '' ) Assessments,
 		COUNT(gi.iteminstance) Total_Assessment_Items,
-		SUM( CASE
-			WHEN (gg.finalgrade/gg.rawgrademax >= 0.70) 
-				THEN 1
-			ELSE 0 
-		END	) Completed_Assessment_Items,
+		SUM(
+		CASE WHEN ( gg.finalgrade / gg.rawgrademax >= 0.70 )
+			THEN 1
+		ELSE 0
+		END) Completed_Assessment_Items,
+		SUM(
+		CASE WHEN gg.finalgrade = 0
+			THEN 1
+		ELSE 0
+		END) CT_Granted,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
-		CASE
-			WHEN cc.timecompleted IS NOT NULL THEN 'Yes'
-			ELSE 'No'
-		END Completed_Course,
 		g.name Group_Name, c.id Cid,
 		GROUP_CONCAT( cm.availability SEPARATOR '\n' ) Restrictions,
 		CONCAT( Student.Sid, c.id ) Enrolment_Identifier
@@ -153,19 +166,20 @@ FROM (
 		AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
 	JOIN prefix_grade_items gi ON gi.courseid = c.id AND gi.itemtype = 'mod'
 	LEFT JOIN prefix_grade_grades gg ON gg.itemid = gi.id AND gg.userid = Student.Sid
+	LEFT JOIN prefix_user ug ON ug.id = gg.usermodified
 	LEFT JOIN prefix_course_modules cm ON cm.course = c.id AND cm.instance = gi.iteminstance
-	JOIN prefix_course_completions cc ON cc.userid = Student.Sid AND cc.course = c.id
 	JOIN prefix_groups_members gm ON gm.userid = Student.Sid
 	JOIN prefix_groups g ON g.id = gm.groupid AND g.courseid = c.id
 	JOIN prefix_groups_members gmt ON gmt.groupid = g.id AND gmt.userid = Trainer.Tid
 	
 	WHERE LOWER(gi.itemname) LIKE 'assessment%'
+	AND gi.itemname NOT LIKE 'Assessment - IT Foundations Course'
 	AND gi.hidden = 0
 	AND g.id IS NOT NULL
 	AND cm.visible = 1
 	AND ( ( cm.availability IS NULL ) OR ( cm.availability LIKE CONCAT('%"op":"|","c"%', '{"type":"profile","sf":"email","op":"isequalto","v":"', Student.Email, '"}%') ) )
 	
-  	GROUP BY Student.Sid, c.id
+	GROUP BY Student.Sid, c.id
 	)
 ) Merged
 
