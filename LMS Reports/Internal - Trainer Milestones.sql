@@ -1,3 +1,8 @@
+/*
+https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=243
+https://www.guru99.com/regular-expressions.html
+*/
+
 SELECT DISTINCT Trainer, Course, Student, Enrolment_Identifier, FROM_UNIXTIME(Last_Grade_Timestamp) Last_Grade, 
 	Assessments,
 	Completed_Assessment_Items, CT_Granted, Total_Assessment_Items, ( Completed_Assessment_Items / Total_Assessment_Items ) * 100 Percent_Complete,
@@ -9,7 +14,7 @@ SELECT DISTINCT Trainer, Course, Student, Enrolment_Identifier, FROM_UNIXTIME(La
 		THEN 'Yes'
 		ELSE 'No'
 	END Milestone2_Status
-	/*, Restrictions*/
+	, Restrictions
 	/*, Group_Name*/
 
 FROM (
@@ -45,7 +50,7 @@ FROM (
 		END) CT_Granted,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
 		g.name Group_Name, c.id Cid,
-		GROUP_CONCAT( cm.availability SEPARATOR '\n' ) Restrictions,
+		GROUP_CONCAT( cm.availability SEPARATOR '<br>' ) Restrictions,
 		CONCAT( Student.Sid, c.id ) Enrolment_Identifier
 
 	FROM
@@ -92,8 +97,11 @@ FROM (
 	AND gi.hidden = 0
 	AND g.id IS NULL
 	AND cm.visible = 1
-	AND ( ( cm.availability IS NULL ) OR ( cm.availability LIKE CONCAT('%"op":"|","c"%', '{"type":"profile","sf":"email","op":"isequalto","v":"', Student.Email, '"}%') ) )
+	/*AND ( ( cm.availability IS NULL ) OR ( cm.availability LIKE CONCAT('%"op":"|","c"%', '{"type":"profile","sf":"email","op":"isequalto","v":"', Student.Email, '"}%') ) )*/
+	/*AND ( ( cm.availability IS NULL ) OR ( cm.availability REGEXP CONCAT('({"op":"[|&]","c":\[)({"type":"profile","sf":"email","op":"isequalto","v":"', Student.Email, '"},?){1,}') ) )*/
 	
+	/*({"op":"[|&]","c":\[)({"type":"profile","sf":"email","op":"isequalto","v":"[\w.@-]*"},?){1,}*/
+
 	GROUP BY Student.Sid, c.id
 	)
 	UNION
@@ -129,7 +137,7 @@ FROM (
 		END) CT_Granted,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
 		g.name Group_Name, c.id Cid,
-		GROUP_CONCAT( cm.availability SEPARATOR '\n' ) Restrictions,
+		GROUP_CONCAT( cm.availability SEPARATOR '<br>' ) Restrictions,
 		CONCAT( Student.Sid, c.id ) Enrolment_Identifier
 
 	FROM
@@ -177,14 +185,16 @@ FROM (
 	AND gi.hidden = 0
 	AND g.id IS NOT NULL
 	AND cm.visible = 1
-	AND ( ( cm.availability IS NULL ) OR ( cm.availability LIKE CONCAT('%"op":"|","c"%', '{"type":"profile","sf":"email","op":"isequalto","v":"', Student.Email, '"}%') ) )
-	
+	/*AND ( ( cm.availability IS NULL ) OR ( cm.availability LIKE CONCAT('%"op":"|","c"%', '{"type":"profile","sf":"email","op":"isequalto","v":"', Student.Email, '"}%') ) )*/
+	/*AND ( ( cm.availability IS NULL ) OR ( cm.availability REGEXP CONCAT('({"op":"[|&]","c":\[)({"type":"profile","sf":"email","op":"isequalto","v":"', Student.Email, '"},?){1,}') ) )*/
+
 	GROUP BY Student.Sid, c.id
 	)
 ) Merged
 
 WHERE Merged.Student IS NOT NULL
 AND ( Merged.Completed_Assessment_Items >= 3 OR ( Merged.Completed_Assessment_Items >= ROUND( Merged.Total_Assessment_Items * 0.6 ) ) )
+AND Restrictions IS NOT NULL
 
 %%FILTER_SEARCHTEXT:Merged.Trainer:~%%
 %%FILTER_STARTTIME:Merged.Last_Grade_Timestamp:>%%

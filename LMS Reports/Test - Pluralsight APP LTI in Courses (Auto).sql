@@ -2,12 +2,13 @@
 
 SELECT DISTINCT REPLACE( l.name, ",", "" ) Name, l.toolurl LTI_Tool,
 	CONCAT( '<a target="_new" href="%%WWWROOT%%/course/modedit.php', char(63), 'up', 'date=', cm.id, '">', c.shortname, '</a>' ) Tool_Link,
-	cm.id Module_ID
+	cm.id Module_ID, cm.module Module_Type, c.id Course_ID, cs.section, cm.instance
 
 FROM
 prefix_course c
 JOIN prefix_lti l ON l.course = c.id
 JOIN prefix_course_modules cm ON cm.course = c.id AND cm.instance = l.id AND cm.module = 20
+JOIN prefix_course_sections cs ON cs.id = cm.section AND cs.course = c.id
 
 WHERE c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101, 52, 30, 31, 32, 23, 26 )
 /*  */
