@@ -42,6 +42,7 @@ done < $csv
 cd $prev
 #
 ### REFERENCES ###
+#https://ec.haxx.se/http/http-post
 #https://coderwall.com/p/iy3iqw/use-curl-to-login-to-a-site-with-cookie-sessions
 #https://www.howtogeek.com/496056/how-to-use-the-grep-command-on-linux/
 #https://askubuntu.com/questions/962551/extract-the-content-from-a-file-between-two-match-patterns-extract-only-html-fr
