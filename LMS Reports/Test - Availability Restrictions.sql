@@ -18,7 +18,24 @@ SELECT DISTINCT CONCAT('<a target="_new" href="%%WWWROOT%%/enrol/users.php', CHA
 		END, CHAR(63), 'id=', cm.id, '">', gi.itemname, '</a><br>'
 	) Assessments,
 	/*FROM_UNIXTIME(gg.timemodified) Grade_Timestamp,*/
-	cm.availability Restrictions
+	cm.availability Restrictions, LEFT( cm.availability, 48 ) Type,
+	CASE WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}'
+		THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+	WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}'
+		THEN ( UNIX_TIMESTAMP() >= CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+	WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
+		THEN 1
+	WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
+		THEN 0
+	WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
+		THEN 0
+	WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
+		THEN 1
+	WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
+		THEN 0
+	WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
+		THEN 1
+	END Selector
 
 FROM
 (
@@ -45,8 +62,24 @@ AND gi.itemname NOT LIKE 'Assessment - IT Foundations Course'
 AND gi.hidden = 0
 AND cm.visible = 1
 AND cm.availability IS NOT NULL
-AND cm.availability REGEXP '.*({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains)","v":"[\\w.@-]*"},{0,1}){1,}.*'
+-- AND CASE
+-- 		WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"<","t":[0-9]{1,}},{0,1}){1,}'
+-- 		THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+-- 		WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":">=","t":[0-9]{1,}},{0,1}){1,}'
+-- 		THEN ( UNIX_TIMESTAMP() >= CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+-- 		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains)","v":"[\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"')
+-- 		THEN 1
+-- 		WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains)","v":"[\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '^("', Student.Email, '")')
+-- 		THEN 1
+-- 		ELSE 0
+-- 	END
+-- AND (
+-- 	cm.availability REGEXP CONCAT( '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains)","v":"', Student.Email, '"},{0,1}){1,}' ) OR
+-- 	cm.availability REGEXP CONCAT( '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<|>=)","t":[0-9]{1,}},{0,1}){1,}' )
+-- )
 /*AND ( ( cm.availability IS NULL ) OR ( cm.availability LIKE CONCAT('%"op":"|","c"%', '{"type":"profile","sf":"email","op":"isequalto","v":"', Student.Email, '"}%') ) )*/
 /*AND ( ( cm.availability IS NULL ) OR ( cm.availability REGEXP CONCAT('({"op":"[|&]","c":\[)({"type":"profile","sf":"email","op":"isequalto","v":"', Student.Email, '"},?){1,}') ) )*/
 
 /*({"op":"[|&]",)("showc":[\[\]a-z]{1,},)?("c":\[)?({"type":"profile","sf":"email","op":"(isequalto|contains)","v":"[\w.@-]*"},?){1,}*/
+
+ORDER BY Selector DESC
