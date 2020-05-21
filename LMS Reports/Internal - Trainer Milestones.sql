@@ -3,7 +3,7 @@ https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=243
 https://www.guru99.com/regular-expressions.html
 */
 
-SELECT DISTINCT Trainer, Course, Student, Enrolment_Identifier,	FROM_UNIXTIME(Last_Grade_Timestamp) Last_Grade,
+SELECT DISTINCT Trainer, Course, Student, Enrolment_Identifier, FROM_UNIXTIME(Last_Grade_Timestamp) Last_Grade,
 	REGEXP_SUBSTR( Last_Grader, "[a-zA-Z)(\\' -]{1,}" ) Last_Grader,
 	Assessments,
 	Completed_Assessment_Items, CT_Granted, RPL_Granted, Total_Assessment_Items,
