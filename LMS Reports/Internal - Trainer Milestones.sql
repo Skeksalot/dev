@@ -3,14 +3,17 @@ https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=243
 https://www.guru99.com/regular-expressions.html
 */
 
-SELECT DISTINCT Trainer, Course, Student, Enrolment_Identifier, FROM_UNIXTIME(Last_Grade_Timestamp) Last_Grade, 
+SELECT DISTINCT Trainer, Course, Student, Enrolment_Identifier,	FROM_UNIXTIME(Last_Grade_Timestamp) Last_Grade,
+	REGEXP_SUBSTR( Last_Grader, "[a-zA-Z)(\\' -]{1,}" ) Last_Grader,
 	Assessments,
-	Completed_Assessment_Items, CT_Granted, Total_Assessment_Items, ( Completed_Assessment_Items / Total_Assessment_Items ) * 100 Percent_Complete,
+	Completed_Assessment_Items, CT_Granted, RPL_Granted, Total_Assessment_Items,
+	( Completed_Assessment_Items / Total_Assessment_Items ) * 100 Completion,
+	( Completed_Assessment_Items / (Total_Assessment_Items - CT_Granted - RPL_Granted) ) * 100 Completion_Adjusted_CT_RPL,
 	CASE WHEN ( Completed_Assessment_Items >= 3 )
 		THEN 'Yes'
 		ELSE 'No'
 	END Milestone1_Status,
-	CASE WHEN ( Completed_Assessment_Items >= ROUND( Total_Assessment_Items * 0.6 ) )
+	CASE WHEN ( Completed_Assessment_Items >= CEILING( (Total_Assessment_Items - CT_Granted - RPL_Granted) * 0.6 ) )
 		THEN 'Yes'
 		ELSE 'No'
 	END Milestone2_Status
@@ -39,17 +42,24 @@ FROM (
 			ELSE IFNULL( CONCAT( ug.firstname, ' ', ug.lastname, ' ' ), '' )
 			END, IFNULL( gg.finalgrade, 'No Grade'), ')</b></a><br>' ) ORDER BY cm.id SEPARATOR '' ) Assessments,
 		COUNT(gi.iteminstance) Total_Assessment_Items,
-		SUM(
-		CASE WHEN ( gg.finalgrade / gg.rawgrademax >= 0.70 )
+		SUM( CASE WHEN ( gg.finalgrade / gg.rawgrademax > 0.70 )
 			THEN 1
 		ELSE 0
-		END) Completed_Assessment_Items,
-		SUM(
-		CASE WHEN gg.finalgrade = 0
+		END ) Completed_Assessment_Items,
+		SUM( CASE WHEN gg.finalgrade = 0
 			THEN 1
 		ELSE 0
-		END) CT_Granted,
+		END ) CT_Granted,
+		SUM( CASE WHEN gg.finalgrade = 70
+			THEN 1
+		ELSE 0
+		END )RPL_Granted,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
+		GROUP_CONCAT( 
+					CASE WHEN ug.id != Student.Sid AND gg.finalgrade IS NOT NULL
+						THEN CONCAT( ug.firstname, ' ', ug.lastname )
+					ELSE ''
+					END ORDER BY gg.timemodified DESC SEPARATOR '|' ) Last_Grader,
 		g.name Group_Name, c.id Cid,
 		GROUP_CONCAT( cm.availability SEPARATOR '<br>' ) Restrictions,
 		GROUP_CONCAT( CASE WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}'
@@ -157,17 +167,24 @@ FROM (
 			ELSE IFNULL( CONCAT( ug.firstname, ' ', ug.lastname, ' ' ), '' )
 			END, IFNULL( gg.finalgrade, 'No Grade'), ')</b></a><br>' ) ORDER BY cm.id SEPARATOR '' ) Assessments,
 		COUNT(gi.iteminstance) Total_Assessment_Items,
-		SUM(
-		CASE WHEN ( gg.finalgrade / gg.rawgrademax >= 0.70 )
+		SUM( CASE WHEN ( gg.finalgrade / gg.rawgrademax > 0.70 )
 			THEN 1
 		ELSE 0
-		END) Completed_Assessment_Items,
-		SUM(
-		CASE WHEN gg.finalgrade = 0
+		END ) Completed_Assessment_Items,
+		SUM( CASE WHEN gg.finalgrade = 0
 			THEN 1
 		ELSE 0
-		END) CT_Granted,
+		END ) CT_Granted,
+		SUM( CASE WHEN gg.finalgrade = 70
+			THEN 1
+		ELSE 0
+		END )RPL_Granted,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
+		GROUP_CONCAT( 
+					CASE WHEN ug.id != Student.Sid AND gg.finalgrade IS NOT NULL
+						THEN CONCAT( ug.firstname, ' ', ug.lastname )
+					ELSE ''
+					END ORDER BY gg.timemodified DESC SEPARATOR '|' ) Last_Grader,
 		g.name Group_Name, c.id Cid,
 		GROUP_CONCAT( cm.availability SEPARATOR '<br>' ) Restrictions,
 		GROUP_CONCAT( CASE WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}'
@@ -195,7 +212,7 @@ FROM (
 		FROM prefix_enrol e
 		JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
 		JOIN prefix_user t ON t.id = ue.userid
-		JOIN prefix_role_assignments ra ON ra.userid = t.id AND ra.roleid IN (3, 4)
+		JOIN prefix_role_assignments ra ON ra.userid = t.id AND ra.roleid IN (3, 4, 17, 18)
 		JOIN prefix_context x ON x.contextlevel = 50 AND x.id = ra.contextid AND x.instanceid = e.courseid
 		
 		WHERE t.firstname IS NOT NULL
@@ -258,11 +275,11 @@ FROM (
 ) Merged
 
 WHERE Merged.Student IS NOT NULL
-AND ( Merged.Completed_Assessment_Items >= 3 OR ( Merged.Completed_Assessment_Items >= ROUND( Merged.Total_Assessment_Items * 0.6 ) ) )
+AND ( Merged.Completed_Assessment_Items >= 3 OR ( Merged.Completed_Assessment_Items >= CEILING( Merged.Total_Assessment_Items * 0.6 ) ) )
 -- AND Restrictions IS NOT NULL
 
 %%FILTER_SEARCHTEXT:Merged.Trainer:~%%
 %%FILTER_STARTTIME:Merged.Last_Grade_Timestamp:>%%
 %%FILTER_ENDTIME:Merged.Last_Grade_Timestamp:<%%
 
-ORDER BY Milestone2_Status ASC, Last_Grade DESC, Percent_Complete DESC
+ORDER BY Milestone2_Status DESC, Last_Grade DESC, Completion DESC
