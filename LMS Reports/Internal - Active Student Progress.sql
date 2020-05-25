@@ -3,20 +3,9 @@ https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=243
 https://www.guru99.com/regular-expressions.html
 */
 
-SELECT DISTINCT Trainer, Course, Student, Enrolment_Identifier, FROM_UNIXTIME(Last_Grade_Timestamp) Last_Grade,
-	REGEXP_SUBSTR( Last_Grader, "[a-zA-Z)(\\' -]{1,}" ) Last_Grader,
-	Assessments,
-	Completed_Assessment_Items, CT_Granted, RPL_Granted, Total_Assessment_Items,
-	( Completed_Assessment_Items / Total_Assessment_Items ) * 100 Completion,
-	( Completed_Assessment_Items / (Total_Assessment_Items - CT_Granted - Auto_Marked) ) * 100 True_Completion,
-	CASE WHEN ( Completed_Assessment_Items >= 3 )
-		THEN 'Yes'
-		ELSE 'No'
-	END Milestone1_Status,
-	CASE WHEN ( Completed_Assessment_Items >= CEILING( (Total_Assessment_Items - CT_Granted - Auto_Marked) * 0.6 ) )
-		THEN 'Yes'
-		ELSE 'No'
-	END Milestone2_Status
+SELECT DISTINCT Trainer, Course, Student, Assessments, FROM_UNIXTIME(Last_Grade_Timestamp) Last_Grade,
+	Completed_Assessment_Items, Total_Assessment_Items,
+	( Completed_Assessment_Items / (Total_Assessment_Items - CT_Granted - RPL_Granted) ) * 100 Completion
 --	, Restrictions
 --	, Selector
 --	, Group_Name
@@ -43,7 +32,7 @@ FROM (
 			ELSE IFNULL( CONCAT( ug.firstname, ' ', ug.lastname, ' ' ), '' )
 			END, IFNULL( gg.finalgrade, 'No Grade'), ')</b></a><br>' ) ORDER BY cm.id SEPARATOR '' ) Assessments,
 		COUNT(gi.iteminstance) Total_Assessment_Items,
-		SUM( CASE WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module <> 15 )
+		SUM( CASE WHEN ( gg.finalgrade / gg.rawgrademax > 0.70 )
 			THEN 1
 		ELSE 0
 		END ) Completed_Assessment_Items,
@@ -55,18 +44,9 @@ FROM (
 			THEN 1
 		ELSE 0
 		END ) RPL_Granted,
-		SUM( CASE WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module = 15 )
-			THEN 1
-		ELSE 0
-		END ) Auto_Marked,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
-		GROUP_CONCAT( 
-					CASE WHEN ug.id != Student.Sid AND gg.finalgrade IS NOT NULL
-						THEN CONCAT( ug.firstname, ' ', ug.lastname )
-					ELSE ''
-					END ORDER BY gg.timemodified DESC SEPARATOR '|' ) Last_Grader,
-		g.name Group_Name, c.id Cid,
-		GROUP_CONCAT( cm.availability SEPARATOR '<br>' ) Restrictions,
+		g.name Group_Name, c.id Cid
+		/*, GROUP_CONCAT( cm.availability SEPARATOR '<br>' ) Restrictions,
 		GROUP_CONCAT( CASE WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}'
 			THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
 		WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}'
@@ -84,7 +64,7 @@ FROM (
 		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
 			THEN 1
 		END SEPARATOR ' ' ) Selector,
-		CONCAT( Student.Sid, c.id ) Enrolment_Identifier
+		CONCAT( Student.Sid, c.id ) Enrolment_Identifier */
 
 	FROM
 	(
@@ -173,7 +153,7 @@ FROM (
 			ELSE IFNULL( CONCAT( ug.firstname, ' ', ug.lastname, ' ' ), '' )
 			END, IFNULL( gg.finalgrade, 'No Grade'), ')</b></a><br>' ) ORDER BY cm.id SEPARATOR '' ) Assessments,
 		COUNT(gi.iteminstance) Total_Assessment_Items,
-		SUM( CASE WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module <> 15 )
+		SUM( CASE WHEN ( gg.finalgrade / gg.rawgrademax > 0.70 )
 			THEN 1
 		ELSE 0
 		END ) Completed_Assessment_Items,
@@ -185,18 +165,9 @@ FROM (
 			THEN 1
 		ELSE 0
 		END ) RPL_Granted,
-		SUM( CASE WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module = 15 )
-			THEN 1
-		ELSE 0
-		END ) Auto_Marked,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
-		GROUP_CONCAT( 
-					CASE WHEN ug.id != Student.Sid AND gg.finalgrade IS NOT NULL
-						THEN CONCAT( ug.firstname, ' ', ug.lastname )
-					ELSE ''
-					END ORDER BY gg.timemodified DESC SEPARATOR '|' ) Last_Grader,
-		g.name Group_Name, c.id Cid,
-		GROUP_CONCAT( cm.availability SEPARATOR '<br>' ) Restrictions,
+		g.name Group_Name, c.id Cid
+		/*, GROUP_CONCAT( cm.availability SEPARATOR '<br>' ) Restrictions,
 		GROUP_CONCAT( CASE WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}'
 			THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
 		WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}'
@@ -213,8 +184,7 @@ FROM (
 			THEN 0
 		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
 			THEN 1
-		END SEPARATOR ' ' ) Selector,
-		CONCAT( Student.Sid, c.id ) Enrolment_Identifier
+		END SEPARATOR ' ' ) Selector */
 
 	FROM
 	(
@@ -285,11 +255,10 @@ FROM (
 ) Merged
 
 WHERE Merged.Student IS NOT NULL
-AND ( Merged.Completed_Assessment_Items >= 3 OR ( Merged.Completed_Assessment_Items >= CEILING( Merged.Total_Assessment_Items * 0.6 ) ) )
 -- AND Restrictions IS NOT NULL
 
 %%FILTER_SEARCHTEXT:Merged.Trainer:~%%
 %%FILTER_STARTTIME:Merged.Last_Grade_Timestamp:>%%
 %%FILTER_ENDTIME:Merged.Last_Grade_Timestamp:<%%
 
-ORDER BY Milestone2_Status DESC, Last_Grade DESC, Completion DESC
+ORDER BY Last_Grade DESC, Completion DESC
