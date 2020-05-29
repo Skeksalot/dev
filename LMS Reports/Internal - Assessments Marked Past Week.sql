@@ -11,7 +11,7 @@ SELECT DISTINCT
 	ag.grade Grade,
 	FROM_UNIXTIME(Logs.timecreated) Time_Graded,
 	CASE
-		WHEN DATEDIFF( CURDATE(), FROM_UNIXTIME(Logs.timecreated) ) > 10 THEN "Yes"
+		WHEN DATEDIFF( FROM_UNIXTIME(s.timemodified), FROM_UNIXTIME(Logs.timecreated) ) > 10 THEN "Yes"
 		ELSE "No"
 	END Overdue,
 	'' Total_Submissions
@@ -30,6 +30,7 @@ JOIN prefix_course c ON c.id = Logs.courseid
 JOIN prefix_assign_grades ag ON ag.id = Logs.objectid
 JOIN prefix_assign a ON a.id = ag.assignment
 JOIN prefix_course_modules cm ON cm.instance = a.id AND cm.course = c.id
+JOIN prefix_assign_submission s ON s.userid = u.id AND s.assignment = a.id AND s.attemptnumber = ag.attemptnumber
 
 WHERE LOWER(a.name) LIKE 'assessment%'
 
