@@ -77,9 +77,9 @@ FROM (
 		
 		WHERE t.firstname IS NOT NULL
 		AND t.lastname IS NOT NULL
-		/*AND t.suspended = 0
+		AND t.suspended = 0
 		AND ue.status = 0
-		AND ue.timeend = ''*/
+		AND ue.timeend = ''
 	) Trainer
 	JOIN
 	(
@@ -92,9 +92,9 @@ FROM (
 		
 		WHERE u.firstname IS NOT NULL
 		AND u.lastname IS NOT NULL
-		/*AND u.suspended = 0
+		AND u.suspended = 0
 		AND ues.status = 0
-		AND ues.timeend = ''*/
+		AND ues.timeend = ''
 	) Student ON Student.Cid = Trainer.Cid AND Student.Sid <> Trainer.Tid
 	JOIN prefix_course c ON c.id = Trainer.Cid
 		AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
@@ -197,9 +197,9 @@ FROM (
 		
 		WHERE t.firstname IS NOT NULL
 		AND t.lastname IS NOT NULL
-		/*AND t.suspended = 0
+		AND t.suspended = 0
 		AND ue.status = 0
-		AND ue.timeend = ''*/
+		AND ue.timeend = ''
 	) Trainer
 	JOIN
 	(
@@ -212,9 +212,9 @@ FROM (
 		
 		WHERE u.firstname IS NOT NULL
 		AND u.lastname IS NOT NULL
-		/*AND u.suspended = 0
+		AND u.suspended = 0
 		AND ues.status = 0
-		AND ues.timeend = ''*/
+		AND ues.timeend = ''
 	) Student ON Student.Cid = Trainer.Cid AND Student.Sid <> Trainer.Tid
 	JOIN prefix_course c ON c.id = Trainer.Cid
 		AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )

@@ -7,10 +7,11 @@ SELECT DISTINCT
 	CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', char(63), 'id=', u.id, '">', u.firstname, ' ', u.lastname, '</a>' ) Student,
 	CONCAT( '<a target="_new" href="%%WWWROOT%%/course/view.php', char(63), 'id=', c.id, '">', c.shortname, '</a>' ) Course,
 	CONCAT( '<a target="_new" href="%%WWWROOT%%/mod/assign/view.php', char(63), 'id=', cm.id, '">', a.name, '</a>' ) Assessment,
+	FROM_UNIXTIME(s.timemodified) Submit_Time,
 	ag.grade Grade,
 	FROM_UNIXTIME(Logs.timecreated) Time_Graded,
 	CASE
-		WHEN DATEDIFF( FROM_UNIXTIME(s.timemodified), FROM_UNIXTIME(Logs.timecreated) ) > 10 THEN "Yes"
+		WHEN DATEDIFF( FROM_UNIXTIME(Logs.timecreated), FROM_UNIXTIME(s.timemodified) ) > 10 THEN "Yes"
 		ELSE "No"
 	END Overdue,
 	'' Total_Submissions
