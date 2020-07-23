@@ -2,88 +2,75 @@
 https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=243
 https://www.guru99.com/regular-expressions.html
 */
-
 SELECT DISTINCT Trainer, Course, Student, Enrolment_Identifier, FROM_UNIXTIME(Last_Grade_Timestamp) Last_Grade,
 	REGEXP_SUBSTR( Last_Grader, "[a-zA-Z)(\\' -]{1,}" ) Last_Grader,
 	Assessments,
 	Completed_Assessment_Items, CT_Granted, RPL_Granted, Total_Assessment_Items,
 	( Completed_Assessment_Items / Total_Assessment_Items ) * 100 Completion,
 	( Completed_Assessment_Items / (Total_Assessment_Items - CT_Granted - Auto_Marked) ) * 100 True_Completion,
-	CASE WHEN ( Completed_Assessment_Items >= 3 )
-		THEN 'Yes'
+	CASE
+		WHEN ( Completed_Assessment_Items >= 3 ) THEN 'Yes'
 		ELSE 'No'
 	END Milestone1_Status,
-	CASE WHEN ( Completed_Assessment_Items >= CEILING( (Total_Assessment_Items - CT_Granted - Auto_Marked) * 0.6 ) )
-		THEN 'Yes'
+	CASE
+		WHEN ( Completed_Assessment_Items >= CEILING( (Total_Assessment_Items - CT_Granted - Auto_Marked) * 0.6 ) ) THEN 'Yes'
 		ELSE 'No'
 	END Milestone2_Status
---	, Restrictions
---	, Selector
---	, Group_Name
 
 FROM (
 	(
 	SELECT DISTINCT
 		GROUP_CONCAT( DISTINCT CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', Trainer.Tid, '">', Trainer.Tfirst, ' ', Trainer.Tlast, '</a>' ) ) Trainer,
-		CONCAT('<a target="_new" href="%%WWWROOT%%/enrol/users.php', CHAR(63), 'id=', c.id, '">', c.shortname, '</a>') Course,
+		CONCAT( '<a target="_new" href="%%WWWROOT%%/enrol/users.php', CHAR(63), 'id=', c.id, '">', c.shortname, '</a>' ) Course,
 		CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', Student.Sid, '">', Student.Sfirst, ' ', Student.Slast, '</a>' ) Student,
 		GROUP_CONCAT( DISTINCT CONCAT( '<a target="_new" href="%%WWWROOT%%/mod/',
-			CASE WHEN cm.module = 13
-				THEN CONCAT( 'quiz/report.php', CHAR(63), 'id=', cm.id, '">' )
-			WHEN cm.module = 15
-				THEN CONCAT( 'scorm/report.php', CHAR(63), 'id=', cm.id, '">' )
-			WHEN cm.module = 21
-				THEN CONCAT( 'assign/view.php', CHAR(63), 'id=', cm.id, '">' )
-			ELSE CONCAT( '"></a><a target="_new" href="%%WWWROOT%%/course/modedit.php?up', 'date=', cm.id, '">' )
+			CASE
+				WHEN cm.module = 13 THEN CONCAT( 'quiz/report.php', CHAR(63), 'id=', cm.id, '">' )
+				WHEN cm.module = 15 THEN CONCAT( 'scorm/report.php', CHAR(63), 'id=', cm.id, '">' )
+				WHEN cm.module = 21 THEN CONCAT( 'assign/view.php', CHAR(63), 'id=', cm.id, '">' )
+				ELSE CONCAT( '"></a><a target="_new" href="%%WWWROOT%%/course/modedit.php?up', 'date=', cm.id, '">' )
 			END, gi.itemname, ' <b>(', 
-			CASE WHEN ( ug.id = Student.Sid AND gg.finalgrade IS NOT NULL )
-				THEN 'Auto '
-			WHEN gg.finalgrade IS NULL
-				THEN ''
-			ELSE IFNULL( CONCAT( ug.firstname, ' ', ug.lastname, ' ' ), '' )
-			END, IFNULL( gg.finalgrade, 'No Grade'), ')</b></a><br>' ) ORDER BY cm.id SEPARATOR '' ) Assessments,
+			CASE
+				WHEN ( ug.id = Student.Sid AND gg.finalgrade IS NOT NULL AND cm.module = 21 ) THEN CONCAT( Trainer.Tfirst, ' ', Trainer.Tlast, ' ' )
+				WHEN ( ug.id = Student.Sid AND gg.finalgrade IS NOT NULL AND cm.module = 20 ) THEN 'External '
+				WHEN ( ug.id = Student.Sid AND gg.finalgrade IS NOT NULL AND cm.module <> 20 ) THEN 'Auto '
+				WHEN gg.finalgrade IS NULL THEN ''
+				ELSE IFNULL( CONCAT( ug.firstname, ' ', ug.lastname, ' ' ), '' )
+			END, IFNULL( gg.finalgrade, 'No Grade'), ')</b></a>' ) ORDER BY cm.id SEPARATOR '<br> ' ) Assessments,
 		COUNT(gi.iteminstance) Total_Assessment_Items,
-		SUM( CASE WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module <> 15 )
-			THEN 1
-		ELSE 0
-		END ) Completed_Assessment_Items,
-		SUM( CASE WHEN gg.finalgrade = 0
-			THEN 1
-		ELSE 0
-		END ) CT_Granted,
-		SUM( CASE WHEN gg.finalgrade = 70
-			THEN 1
-		ELSE 0
-		END ) RPL_Granted,
-		SUM( CASE WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module = 15 )
-			THEN 1
-		ELSE 0
-		END ) Auto_Marked,
+		SUM( CASE
+				WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module <> 15 ) THEN 1
+				ELSE 0
+			END ) Completed_Assessment_Items,
+		SUM( CASE
+				WHEN gg.finalgrade = 0 THEN 1
+				ELSE 0
+			END ) CT_Granted,
+		SUM( CASE
+				WHEN gg.finalgrade = 70 THEN 1
+				ELSE 0
+			END ) RPL_Granted,
+		SUM( CASE
+				WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module = 15 ) THEN 1
+				ELSE 0
+			END ) Auto_Marked,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
-		GROUP_CONCAT( 
-					CASE WHEN ug.id != Student.Sid AND gg.finalgrade IS NOT NULL
-						THEN CONCAT( ug.firstname, ' ', ug.lastname )
-					ELSE ''
+		GROUP_CONCAT( CASE
+						WHEN ( ug.id != Student.Sid AND gg.finalgrade IS NOT NULL ) THEN CONCAT( ug.firstname, ' ', ug.lastname )
+						ELSE ''
 					END ORDER BY gg.timemodified DESC SEPARATOR '|' ) Last_Grader,
 		g.name Group_Name, c.id Cid,
 		GROUP_CONCAT( cm.availability SEPARATOR '<br>' ) Restrictions,
-		GROUP_CONCAT( CASE WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}'
-			THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}'
-			THEN ( UNIX_TIMESTAMP() >= CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		END SEPARATOR ' ' ) Selector,
+		GROUP_CONCAT( CASE
+						WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}' THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+						WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}' THEN ( UNIX_TIMESTAMP() >= CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+						WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+						WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+						WHEN ( cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+						WHEN ( cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+						WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+						WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+					END SEPARATOR ' ' ) Selector,
 		CONCAT( Student.Sid, c.id ) Enrolment_Identifier
 
 	FROM
@@ -103,7 +90,7 @@ FROM (
 	) Trainer
 	JOIN
 	(
-		SELECT DISTINCT u.firstname Sfirst, u.lastname Slast, u.id Sid, es.courseid Cid, u.email Email, u.lastaccess Lastaccess, ues.timeend Enddate
+		SELECT DISTINCT u.firstname Sfirst, u.lastname Slast, u.id Sid, es.courseid Cid, u.email Email
 		FROM prefix_enrol es
 		JOIN prefix_user_enrolments ues ON ues.enrolid = es.id
 		JOIN prefix_user u ON u.id = ues.userid
@@ -125,95 +112,78 @@ FROM (
 	LEFT JOIN prefix_groups_members gm ON gm.userid = Student.Sid
 	LEFT JOIN prefix_groups g ON g.id = gm.groupid AND g.courseid = c.id
 	
-	WHERE LOWER(gi.itemname) LIKE 'assessment%'
+	WHERE LOWER(gi.itemname) LIKE 'assessment -%'
 	AND gi.itemname NOT LIKE 'Assessment - IT Foundations Course'
 	AND gi.hidden = 0
 	AND g.id IS NULL
 	AND cm.visible = 1
-	AND IFNULL( CASE WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}'
-			THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}'
-			THEN ( UNIX_TIMESTAMP() >= CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		END, 1 ) = 1
+	AND IFNULL( CASE
+					WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}' THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+					WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}' THEN ( UNIX_TIMESTAMP() >= CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+					WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+					WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+					WHEN ( cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+					WHEN ( cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+					WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+					WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+				END, 1 ) = 1
 
 	GROUP BY Student.Sid, c.id
--- HAVING Selector IS NOT NULL
 	)
 	UNION
 	(
 	SELECT DISTINCT
 		GROUP_CONCAT( DISTINCT CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', Trainer.Tid, '">', Trainer.Tfirst, ' ', Trainer.Tlast, '</a>' ) ) Trainer,
-		CONCAT('<a target="_new" href="%%WWWROOT%%/enrol/users.php', CHAR(63), 'id=', c.id, '">', c.shortname, '</a>') Course,
+		CONCAT( '<a target="_new" href="%%WWWROOT%%/enrol/users.php', CHAR(63), 'id=', c.id, '">', c.shortname, '</a>' ) Course,
 		CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', Student.Sid, '">', Student.Sfirst, ' ', Student.Slast, '</a>' ) Student,
 		GROUP_CONCAT( DISTINCT CONCAT( '<a target="_new" href="%%WWWROOT%%/mod/',
-			CASE WHEN cm.module = 13
-				THEN CONCAT( 'quiz/report.php', CHAR(63), 'id=', cm.id, '">' )
-			WHEN cm.module = 15
-				THEN CONCAT( 'scorm/report.php', CHAR(63), 'id=', cm.id, '">' )
-			WHEN cm.module = 21
-				THEN CONCAT( 'assign/view.php', CHAR(63), 'id=', cm.id, '">' )
-			ELSE CONCAT( '"></a><a target="_new" href="%%WWWROOT%%/course/modedit.php?up', 'date=', cm.id, '">' )
+			CASE
+				WHEN cm.module = 13 THEN CONCAT( 'quiz/report.php', CHAR(63), 'id=', cm.id, '">' )
+				WHEN cm.module = 15 THEN CONCAT( 'scorm/report.php', CHAR(63), 'id=', cm.id, '">' )
+				WHEN cm.module = 21 THEN CONCAT( 'assign/view.php', CHAR(63), 'id=', cm.id, '">' )
+				ELSE CONCAT( '"></a><a target="_new" href="%%WWWROOT%%/course/modedit.php?up', 'date=', cm.id, '">' )
 			END, gi.itemname, ' <b>(', 
-			CASE WHEN ( ug.id = Student.Sid AND gg.finalgrade IS NOT NULL )
-				THEN 'Auto '
-			WHEN gg.finalgrade IS NULL
-				THEN ''
-			ELSE IFNULL( CONCAT( ug.firstname, ' ', ug.lastname, ' ' ), '' )
-			END, IFNULL( gg.finalgrade, 'No Grade'), ')</b></a><br>' ) ORDER BY cm.id SEPARATOR '' ) Assessments,
+			CASE
+				WHEN ( ug.id = Student.Sid AND gg.finalgrade IS NOT NULL AND cm.module = 21 ) THEN CONCAT( Trainer.Tfirst, ' ', Trainer.Tlast, ' ' )
+				WHEN ( ug.id = Student.Sid AND gg.finalgrade IS NOT NULL AND cm.module = 20 ) THEN 'External '
+				WHEN ( ug.id = Student.Sid AND gg.finalgrade IS NOT NULL AND cm.module <> 20 ) THEN 'Auto '
+				WHEN gg.finalgrade IS NULL THEN ''
+				ELSE IFNULL( CONCAT( ug.firstname, ' ', ug.lastname, ' ' ), '' )
+			END, IFNULL( gg.finalgrade, 'No Grade'), ')</b></a>' ) ORDER BY cm.id SEPARATOR '<br> ' ) Assessments,
 		COUNT(gi.iteminstance) Total_Assessment_Items,
-		SUM( CASE WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module <> 15 )
-			THEN 1
-		ELSE 0
-		END ) Completed_Assessment_Items,
-		SUM( CASE WHEN gg.finalgrade = 0
-			THEN 1
-		ELSE 0
-		END ) CT_Granted,
-		SUM( CASE WHEN gg.finalgrade = 70
-			THEN 1
-		ELSE 0
-		END ) RPL_Granted,
-		SUM( CASE WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module = 15 )
-			THEN 1
-		ELSE 0
-		END ) Auto_Marked,
+		SUM( CASE
+				WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module <> 15 ) THEN 1
+				ELSE 0
+			END ) Completed_Assessment_Items,
+		SUM( CASE
+				WHEN gg.finalgrade = 0 THEN 1
+				ELSE 0
+			END ) CT_Granted,
+		SUM( CASE
+				WHEN gg.finalgrade = 70 THEN 1
+				ELSE 0
+			END ) RPL_Granted,
+		SUM( CASE
+				WHEN ( ( gg.finalgrade / gg.rawgrademax > 0.70 ) AND cm.module = 15 ) THEN 1
+				ELSE 0
+			END ) Auto_Marked,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
-		GROUP_CONCAT( 
-					CASE WHEN ug.id != Student.Sid AND gg.finalgrade IS NOT NULL
-						THEN CONCAT( ug.firstname, ' ', ug.lastname )
-					ELSE ''
+		GROUP_CONCAT( CASE
+						WHEN ( ug.id != Student.Sid AND gg.finalgrade IS NOT NULL ) THEN CONCAT( ug.firstname, ' ', ug.lastname )
+						ELSE ''
 					END ORDER BY gg.timemodified DESC SEPARATOR '|' ) Last_Grader,
 		g.name Group_Name, c.id Cid,
 		GROUP_CONCAT( cm.availability SEPARATOR '<br>' ) Restrictions,
-		GROUP_CONCAT( CASE WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}'
-			THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}'
-			THEN ( UNIX_TIMESTAMP() >= CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		END SEPARATOR ' ' ) Selector,
+		GROUP_CONCAT( CASE
+						WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}' THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+						WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}' THEN ( UNIX_TIMESTAMP() >= CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+						WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+						WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+						WHEN ( cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+						WHEN ( cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+						WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+						WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+					END SEPARATOR ' ' ) Selector,
 		CONCAT( Student.Sid, c.id ) Enrolment_Identifier
 
 	FROM
@@ -233,7 +203,7 @@ FROM (
 	) Trainer
 	JOIN
 	(
-		SELECT DISTINCT u.firstname Sfirst, u.lastname Slast, u.id Sid, es.courseid Cid, u.email Email, u.lastaccess Lastaccess, ues.timeend Enddate
+		SELECT DISTINCT u.firstname Sfirst, u.lastname Slast, u.id Sid, es.courseid Cid, u.email Email
 		FROM prefix_enrol es
 		JOIN prefix_user_enrolments ues ON ues.enrolid = es.id
 		JOIN prefix_user u ON u.id = ues.userid
@@ -256,37 +226,28 @@ FROM (
 	JOIN prefix_groups g ON g.id = gm.groupid AND g.courseid = c.id
 	JOIN prefix_groups_members gmt ON gmt.groupid = g.id AND gmt.userid = Trainer.Tid
 
-	WHERE LOWER(gi.itemname) LIKE 'assessment%'
+	WHERE LOWER(gi.itemname) LIKE 'assessment -%'
 	AND gi.itemname NOT LIKE 'Assessment - IT Foundations Course'
 	AND gi.hidden = 0
 	AND g.id IS NOT NULL
 	AND cm.visible = 1
-	AND IFNULL( CASE WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}'
-			THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}'
-			THEN ( UNIX_TIMESTAMP() >= CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 0
-		WHEN cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' )
-			THEN 1
-		END, 1 ) = 1
+	AND IFNULL( CASE
+					WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(<)","t":[0-9]{1,}},{0,1}){1,}' THEN ( UNIX_TIMESTAMP() < CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+					WHEN cm.availability REGEXP '({"op":"[|&]",)("c":\\[){0,1}({"type":"date","d":"(>=)","t":[0-9]{1,}},{0,1}){1,}' THEN ( UNIX_TIMESTAMP() >= CONVERT( REGEXP_SUBSTR( cm.availability, '[0-9]{1,}' ), UNSIGNED ) )
+					WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+					WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+					WHEN ( cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+					WHEN ( cm.availability REGEXP '({"op":"![|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(isequalto|contains|endswith)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+					WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 0
+					WHEN ( cm.availability REGEXP '({"op":"[|&]",)("showc":\\[[a-z]{1,}\\],){0,1}("c":\\[){0,1}({"type":"profile","sf":"email","op":"(doesnotcontain)","v":"[\\w.@-]*"},{0,1}){1,}' AND NOT cm.availability REGEXP CONCAT( '"', Student.Email, '"' ) ) THEN 1
+				END, 1 ) = 1
 
 	GROUP BY Student.Sid, c.id
--- HAVING Selector IS NOT NULL
 	)
 ) Merged
 
 WHERE Merged.Student IS NOT NULL
 AND ( Merged.Completed_Assessment_Items >= 3 OR ( Merged.Completed_Assessment_Items >= CEILING( Merged.Total_Assessment_Items * 0.6 ) ) )
--- AND Restrictions IS NOT NULL
 
 %%FILTER_SEARCHTEXT:Merged.Trainer:~%%
 %%FILTER_STARTTIME:Merged.Last_Grade_Timestamp:>%%

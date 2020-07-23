@@ -1,0 +1,133 @@
+﻿<Page x:Class="Reporting_Pluralsight.API_Controller"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Reporting_Pluralsight"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="eLearning Activity Reporting"
+	  Style="{StaticResource defaultPageStyle}" ShowsNavigationUI="False">
+
+	<Grid Style="{StaticResource baseGridStyle}" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="48" />
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition />
+		</Grid.RowDefinitions>
+		
+		<!-- Left Nav Bar -->
+		<StackPanel Style="{StaticResource navPanelStyle}" Grid.Row="0" Grid.Column="0">
+			<Button Click="Nav_To_Home" Style="{StaticResource navButtonStyle}">
+				<Button.ToolTip>
+					<TextBlock>Home</TextBlock>
+				</Button.ToolTip>
+				<Image Source="Logo White Wordmark Stacked.png" Style="{StaticResource navImageStyle}" />
+			</Button>
+			<Button Click="Nav_To_User_Search" Style="{StaticResource navButtonStyle}">
+				<Button.ToolTip>
+					<TextBlock>User Search</TextBlock>
+				</Button.ToolTip>
+				<Image Source="userSearch_icon.png" Style="{StaticResource navImageStyle}" />
+			</Button>
+			<Button Click="Nav_To_API" Style="{StaticResource navButtonStyle}" IsEnabled="False">
+				<Button.ToolTip>
+					<TextBlock>API Access</TextBlock>
+				</Button.ToolTip>
+				<Image Source="api_icon.png" Style="{StaticResource navImageStyle}" />
+			</Button>
+		</StackPanel>
+		
+		<!-- Main Content -->
+		<TabControl Style="{StaticResource tabControlStyle}" Grid.Column="1">
+			<TabItem Header="Pluralsight" Style="{StaticResource tabItemsStyle}">
+				<Grid Style="{StaticResource baseGridStyle}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="48" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition />
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<Grid.Resources>
+						<!-- Endpoint Data -->
+						<XmlDataProvider x:Key="APIDataSource" Source="Pluralsight_API.xml" XPath="/Provider" />
+						<!-- Name item template -->
+						<DataTemplate x:Key="nameItemTemplate">
+							<Label Content="{Binding XPath=@Name}"/>
+						</DataTemplate>
+					</Grid.Resources>
+
+					<Image Source="Pluralsight.png" Grid.Row="0" Grid.Column="0" />
+					<Label Grid.Column="1" Style="{StaticResource headerTextStyle}" >
+						Pluralsight API Access
+					</Label>
+					
+					<!-- Endpoints list -->
+					<Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource listHeaderStyle}">
+						<Label Style="{StaticResource listHeaderTextStyle}">API Endpoints</Label>
+					</Border>
+					<ListBox Name="pluralsightEndpointListBox" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" 
+					 ItemsSource="{Binding Source={StaticResource APIDataSource}, XPath=./API/Endpoint}"
+					 ItemTemplate="{StaticResource nameItemTemplate}" BorderThickness="0" BorderBrush="White">
+						<ListBox.Background>
+							<SolidColorBrush Color="White"/>
+						</ListBox.Background>
+					</ListBox>
+
+					<!-- View report button -->
+					<Border Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Background="White" BorderBrush="White">
+						<Button Grid.Column="1" Grid.Row="3" Click="View_Report" Style="{StaticResource buttonStyle}">View</Button>
+					</Border>
+				</Grid>
+			</TabItem>
+
+			<TabItem Header="LinkedIn Learning" Style="{StaticResource tabItemsStyle}">
+				<Grid Style="{StaticResource baseGridStyle}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="48" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition />
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<Grid.Resources>
+						<!-- Endpoint Data -->
+						<XmlDataProvider x:Key="APIDataSource" Source="Pluralsight_API.xml" XPath="/Provider" />
+						<!-- Name item template -->
+						<DataTemplate x:Key="nameItemTemplate">
+							<Label Content="{Binding XPath=@Name}"/>
+						</DataTemplate>
+					</Grid.Resources>
+
+					<Image Source="LinkedIn_Learning.png" Grid.Row="0" Grid.Column="0" />
+					<Label Grid.Column="1" Style="{StaticResource headerTextStyle}" >
+						LinkedIn Learning API Access
+					</Label>
+					
+					<!-- Endpoints list -->
+					<Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource listHeaderStyle}">
+						<Label Style="{StaticResource listHeaderTextStyle}">API Endpoints</Label>
+					</Border>
+					<ListBox Name="linkedinEndpointListBox" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{StaticResource nameItemTemplate}" BorderThickness="0" BorderBrush="White">
+						<ListBox.Background>
+							<SolidColorBrush Color="White"/>
+						</ListBox.Background>
+					</ListBox>
+
+				</Grid>
+			</TabItem>
+		</TabControl>
+	</Grid>
+
+</Page>

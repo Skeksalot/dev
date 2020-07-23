@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Provider Name="Pluralsight" Token="9d181b54-e54c-4b2c-9625-4c4c9a1767a9" xlmns="">
+	<API Type="Licencing">
+	
+	</API>
+	<API Type="Reporting">
+		<Endpoint Name="Users" Base="https://app.pluralsight.com/plans/api/reports/v1/users/upskilled">
+			<Option Name="Token" Required="True"></Option>
+			<Response>
+				<Field Name="UserId" CanBeEmpty="False"></Field>
+				<Field Name="FirstName" CanBeEmpty="False"></Field>
+				<Field Name="LastName" CanBeEmpty="False"></Field>
+				<Field Name="Email" CanBeEmpty="False"></Field>
+				<Field Name="TeamName" CanBeEmpty="True"></Field>
+				<Field Name="Note" CanBeEmpty="True"></Field>
+				<Field Name="StartDate" CanBeEmpty="True"></Field>
+			</Response>
+		</Endpoint>
+		<Endpoint Name="Content Completion" Base="https://app.pluralsight.com/plans/api/reports/v1/content-completion/upskilled">
+			<Option Name="Token" Required="True"></Option>
+			<Option Name="StartDate" Required="False"></Option>
+			<Option Name="EndDate" Required="False"></Option>
+			<Response>
+				<Field Name="UserId" CanBeEmpty="False"></Field>
+				<Field Name="FirstName" CanBeEmpty="False"></Field>
+				<Field Name="LastName" CanBeEmpty="False"></Field>
+				<Field Name="Email" CanBeEmpty="False"></Field>
+				<Field Name="TeamName" CanBeEmpty="True"></Field>
+				<Field Name="Note" CanBeEmpty="True"></Field>
+				<Field Name="IsOnAccount" CanBeEmpty="False"></Field>
+				<Field Name="ContentType" CanBeEmpty="False"></Field>
+				<Field Name="ContentId" CanBeEmpty="False"></Field>
+				<Field Name="ContentSlug" CanBeEmpty="False"></Field>
+				<Field Name="ContentName" CanBeEmpty="False"></Field>
+				<Field Name="FirstActivityDate" CanBeEmpty="False"></Field>
+				<Field Name="PercentComplete" CanBeEmpty="False"></Field>
+				<Field Name="CompletionStatus" CanBeEmpty="False"></Field>
+				<Field Name="CompletionDate" CanBeEmpty="False"></Field>
+			</Response>
+		</Endpoint>
+		<Endpoint Name="Content Usage" Base="https://app.pluralsight.com/plans/api/reports/v1/content-usage/upskilled">
+			<Option Name="Token" Required="True"></Option>
+			<Option Name="StartDate" Required="False"></Option>
+			<Option Name="EndDate" Required="False"></Option>
+			<Response>
+				<Field Name="UserId" CanBeEmpty="False"></Field>
+				<Field Name="FirstName" CanBeEmpty="False"></Field>
+				<Field Name="LastName" CanBeEmpty="False"></Field>
+				<Field Name="Email" CanBeEmpty="False"></Field>
+				<Field Name="TeamName" CanBeEmpty="True"></Field>
+				<Field Name="Note" CanBeEmpty="True"></Field>
+				<Field Name="IsOnAccount" CanBeEmpty="False"></Field>
+				<Field Name="ContentType" CanBeEmpty="False"></Field>
+				<Field Name="ContentId" CanBeEmpty="False"></Field>
+				<Field Name="ContentSlug" CanBeEmpty="False"></Field>
+				<Field Name="ContentName" CanBeEmpty="False"></Field>
+				<Field Name="ViewDate" CanBeEmpty="False"></Field>
+				<Field Name="UsageInSeconds" CanBeEmpty="False"></Field>
+			</Response>
+		</Endpoint>
+		<Endpoint Name="Course Completion" Base="https://app.pluralsight.com/plans/api/reports/v1/course-completion/upskilled">
+			<Option Name="Token" Required="True"></Option>
+			<Option Name="StartDate" Required="False"></Option>
+			<Option Name="EndDate" Required="False"></Option>
+			<Response>
+				<Field Name="UserId" CanBeEmpty="False"></Field>
+				<Field Name="FirstName" CanBeEmpty="False"></Field>
+				<Field Name="LastName" CanBeEmpty="False"></Field>
+				<Field Name="Email" CanBeEmpty="False"></Field>
+				<Field Name="TeamName" CanBeEmpty="True"></Field>
+				<Field Name="Note" CanBeEmpty="True"></Field>
+				<Field Name="IsOnAccount" CanBeEmpty="False"></Field>
+				<Field Name="CourseId" CanBeEmpty="False"></Field>
+				<Field Name="CourseName" CanBeEmpty="False"></Field>
+				<Field Name="FirstViewDate" CanBeEmpty="False"></Field>
+				<Field Name="CompletionDate" CanBeEmpty="False"></Field>
+				<Field Name="CompletionStatus" CanBeEmpty="False"></Field>
+			</Response>
+		</Endpoint>
+		<Endpoint Name="Course Usage" Base="https://app.pluralsight.com/plans/api/reports/v1/course-usage/upskilled">
+			<Option Name="token" Required="True"></Option>
+			<Option Name="StartDate" Required="False"></Option>
+			<Option Name="EndDate" Required="False"></Option>
+			<Response>
+				<Field Name="UserId" CanBeEmpty="False"></Field>
+				<Field Name="FirstName" CanBeEmpty="False"></Field>
+				<Field Name="LastName" CanBeEmpty="False"></Field>
+				<Field Name="Email" CanBeEmpty="False"></Field>
+				<Field Name="TeamName" CanBeEmpty="True"></Field>
+				<Field Name="Note" CanBeEmpty="True"></Field>
+				<Field Name="IsOnAccount" CanBeEmpty="False"></Field>
+				<Field Name="CourseId" CanBeEmpty="False"></Field>
+				<Field Name="CourseName" CanBeEmpty="False"></Field>
+				<Field Name="ViewDate" CanBeEmpty="False"></Field>
+				<Field Name="UsageInSeconds" CanBeEmpty="False"></Field>
+			</Response>
+		</Endpoint>
+	</API>
+</Provider>

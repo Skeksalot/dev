@@ -16,7 +16,7 @@ touch $log
 # Login to LMS, store cookies for session data
 curl "https://lms.upskilled.edu.au/login/index.php" --data-urlencode "username=sir.skeksalot@gmail.com" --data-urlencode "password==DElicious1" --cookie $cookie --cookie-jar $cookie --location --verbose > $html
 # Retrieve relevant report
-curl "https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=245" --cookie $cookie --cookie-jar $cookie > $report
+curl "https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=248" --cookie $cookie --cookie-jar $cookie > $report
 # Parse report and extract data table
 grep -E -w -i "<td|<th" $report > $table
 sed -r "s/<\/td>|<\/th>/,/g" $table > $csv
