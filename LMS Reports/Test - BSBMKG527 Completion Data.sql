@@ -112,8 +112,8 @@ LEFT JOIN
 	AND NOT c.shortname REGEXP 'Core Only'
 	/*AND gg.finalgrade IS NOT NULL
 	AND ( gg.finalgrade = 0 OR gg.finalgrade >= 70 )
-	AND asub.status = 'submitted'
-	AND asub.timemodified > UNIX_TIMESTAMP('2019-10-01 00:00:00')*/
+	AND asub.status = 'submitted'*/
+	AND asub.timemodified > UNIX_TIMESTAMP('2019-09-25 00:00:00')
 ) BSBMKG527 ON Student.Enrolment_Identifier = BSBMKG527.Enrolment_Identifier
 
 GROUP BY Student.Enrolment_Identifier
