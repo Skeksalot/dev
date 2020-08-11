@@ -1,7 +1,7 @@
 /*
 https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=265
 */
-SELECT DISTINCT Enrolment_Identifier, Trainer, Course, Student, Assessment, Grade, FROM_UNIXTIME(Merged.Grade_Timestamp), Grader, Assessment_Type
+SELECT DISTINCT Enrolment_Identifier, Trainer, Course, Student, Assessment, Grade, FROM_UNIXTIME(Merged.Grade_Timestamp) Time_Graded, Grader, Assessment_Type
 
 FROM
 (
@@ -22,8 +22,8 @@ FROM
 			gh.timemodified Grade_Timestamp,
 			CASE
 				WHEN ( ug.id != Student.id AND gh.finalgrade IS NOT NULL AND cm.module = 21 ) THEN CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', ug.id, '">', ug.firstname, ' ', ug.lastname, '</a>' )
-				WHEN ( ug.id = Student.id AND gh.finalgrade IS NOT NULL AND cm.module = 20 ) THEN 'External '
-				WHEN ( ug.id = Student.id AND gh.finalgrade IS NOT NULL AND cm.module <> 20 ) THEN 'Auto '
+				WHEN ( ug.id = Student.id AND gh.finalgrade IS NOT NULL AND cm.module = 20 ) THEN 'External'
+				WHEN ( ug.id = Student.id AND gh.finalgrade IS NOT NULL AND cm.module <> 20 ) THEN 'Auto'
 				-- WHEN gh.finalgrade IS NULL THEN ''
 				ELSE IFNULL( CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', ug.id, '">', ug.firstname, ' ', ug.lastname, '</a>' ), '' )
 			END Grader,
@@ -70,7 +70,7 @@ FROM
 			AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
 		JOIN prefix_grade_items gi ON gi.courseid = c.id AND gi.itemtype = 'mod'
 		-- JOIN prefix_grade_grades gg ON gg.itemid = gi.id AND gg.userid = Student.id
-		JOIN prefix_grade_grades_history gh ON gh.itemid = gi.id AND gh.userid = Student.id AND gh.usermodified <> Student.id
+		JOIN prefix_grade_grades_history gh ON gh.itemid = gi.id AND gh.userid = Student.id
 		JOIN prefix_user ug ON ug.id = gh.usermodified
 		JOIN prefix_course_modules cm ON cm.course = c.id AND cm.instance = gi.iteminstance
 		LEFT JOIN prefix_groups_members gm ON gm.userid = Student.id
@@ -80,6 +80,7 @@ FROM
 		AND gi.itemname NOT LIKE 'Assessment - IT Foundations Course'
 		AND gi.hidden = 0
 		AND g.id IS NULL
+		AND gh.finalgrade IS NOT NULL
 		AND gh.action IN (1, 2)
 		AND ug.id IS NOT NULL
 	)
@@ -101,8 +102,8 @@ FROM
 			gh.timemodified Grade_Timestamp,
 			CASE
 				WHEN ( ug.id != Student.id AND gh.finalgrade IS NOT NULL AND cm.module = 21 ) THEN CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', ug.id, '">', ug.firstname, ' ', ug.lastname, '</a>' )
-				WHEN ( ug.id = Student.id AND gh.finalgrade IS NOT NULL AND cm.module = 20 ) THEN 'External '
-				WHEN ( ug.id = Student.id AND gh.finalgrade IS NOT NULL AND cm.module <> 20 ) THEN 'Auto '
+				WHEN ( ug.id = Student.id AND gh.finalgrade IS NOT NULL AND cm.module = 20 ) THEN 'External'
+				WHEN ( ug.id = Student.id AND gh.finalgrade IS NOT NULL AND cm.module <> 20 ) THEN 'Auto'
 				-- WHEN gh.finalgrade IS NULL THEN ''
 				ELSE IFNULL( CONCAT( '<a target="_new" href="%%WWWROOT%%/user/profile.php', CHAR(63), 'id=', ug.id, '">', ug.firstname, ' ', ug.lastname, '</a>' ), '' )
 			END Grader,
@@ -121,7 +122,7 @@ FROM
 			FROM prefix_enrol e
 			JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
 			JOIN prefix_user t ON t.id = ue.userid
-			JOIN prefix_role_assignments ra ON ra.userid = t.id AND ra.roleid IN (3, 4)
+			JOIN prefix_role_assignments ra ON ra.userid = t.id AND ra.roleid IN (3, 4, 17, 18)
 			JOIN prefix_context x ON x.contextlevel = 50 AND x.id = ra.contextid AND x.instanceid = e.courseid
 			
 			WHERE t.firstname IS NOT NULL
@@ -148,7 +149,7 @@ FROM
 		JOIN prefix_course c ON c.id = Trainer.Cid
 			AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
 		JOIN prefix_grade_items gi ON gi.courseid = c.id AND gi.itemtype = 'mod'
-		JOIN prefix_grade_grades_history gh ON gh.itemid = gi.id AND gh.userid = Student.id AND gh.usermodified <> Student.id
+		JOIN prefix_grade_grades_history gh ON gh.itemid = gi.id AND gh.userid = Student.id
 		JOIN prefix_user ug ON ug.id = gh.usermodified
 		JOIN prefix_course_modules cm ON cm.course = c.id AND cm.instance = gi.iteminstance
 		JOIN prefix_groups_members gm ON gm.userid = Student.id
@@ -160,6 +161,7 @@ FROM
 		AND gi.hidden = 0
 		AND g.id IS NOT NULL
 		AND gh.action IN (1, 2)
+		AND gh.finalgrade IS NOT NULL
 		AND ug.id IS NOT NULL
 	)
 ) Merged
