@@ -21,29 +21,35 @@ FROM (
 		
 	FROM (
 		SELECT DISTINCT e.courseid course_id, u.id student_id, CONCAT(u.firstname, ' ', u.lastname) student_name,
-		ue.status student_status, ue.timeend student_end, g.id student_groupid, g.name student_group, x.instanceid student_context_instanceid
+		ue.status student_status, ue.timeend student_end, Groups.groupid student_groupid, Groups.name student_group, x.instanceid student_context_instanceid
 		
 		FROM prefix_enrol e
 		JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
 		JOIN prefix_user u ON u.id = ue.userid
 		JOIN prefix_role_assignments ra ON ra.userid = u.id AND ra.roleid = 5
 		JOIN prefix_context x ON x.contextlevel = 50 AND x.id = ra.contextid AND x.instanceid = e.courseid
-		LEFT JOIN prefix_groups_members gm ON gm.userid = u.id
-		LEFT JOIN prefix_groups g ON g.id = gm.groupid AND g.courseid = e.courseid
+		LEFT JOIN (
+			SELECT gm.id groupmemberid, gm.timeadded, gm.groupid linkedgroupid, gm.userid, g.id groupid, g.name, g.courseid
+			FROM prefix_groups_members gm
+			JOIN prefix_groups g ON g.id = gm.groupid
+		) Groups ON Groups.userid = u.id AND Groups.courseid = e.courseid
 		WHERE u.suspended = 0
 		AND ue.status = 0
 		AND ue.timeend = ''
 	) Students
 	JOIN (
 		SELECT DISTINCT e.courseid course_id, t.id trainer_id, CONCAT(t.firstname, ' ', t.lastname) trainer_name,
-		uet.status trainer_status, uet.timeend trainer_end, gt.id trainer_groupid, gt.name trainer_group, xt.instanceid trainer_context_instanceid
+		uet.status trainer_status, uet.timeend trainer_end, Groupst.groupid trainer_groupid, Groupst.name trainer_group, xt.instanceid trainer_context_instanceid
 		FROM prefix_enrol e
 		JOIN prefix_user_enrolments uet ON uet.enrolid = e.id
 		JOIN prefix_user t ON t.id = uet.userid
 		JOIN prefix_role_assignments rat ON rat.userid = t.id AND rat.roleid IN (3, 4)
 		JOIN prefix_context xt ON xt.contextlevel = 50 AND xt.id = rat.contextid AND xt.instanceid = e.courseid
-		LEFT JOIN prefix_groups_members gmt ON gmt.userid = t.id
-		LEFT JOIN prefix_groups gt ON gt.id = gmt.groupid AND gt.courseid = e.courseid
+		LEFT JOIN (
+			SELECT gm.id groupmemberid, gm.timeadded, gm.groupid linkedgroupid, gm.userid, g.id groupid, g.name, g.courseid
+			FROM prefix_groups_members gm
+			JOIN prefix_groups g ON g.id = gm.groupid
+		) Groupst ON Groupst.userid = t.id AND Groupst.courseid = e.courseid
 		WHERE t.suspended = 0
 		AND uet.status = 0
 		AND uet.timeend = ''
