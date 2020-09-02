@@ -1,5 +1,8 @@
 /*
-https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=265
+https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=265&courseid=1 - ALL
+https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=272&courseid=1 - BSB
+https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=273&courseid=1 - CHC
+https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=274&courseid=1 - ICT
 */
 SELECT DISTINCT Enrolment_Identifier, Trainer, Course, Student, Assessment, Grade, FROM_UNIXTIME(Merged.Grade_Timestamp) Time_Graded, Grader, Assessment_Type
 
@@ -68,6 +71,9 @@ FROM
 		) Student ON Student.Cid = Trainer.Cid AND Student.id <> Trainer.id
 		JOIN prefix_course c ON c.id = Trainer.Cid
 			AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
+			-- AND c.category IN ( 227, 217, 82, 234, 83, 98, 155, 85, 271, 258, 100, 99, 84, 177, 275, 270, 157, 198, 210, 241, 195, 87, 88, 90, 276, 91, 92, 89, 272, 178, 156, 203, 205, 200, 243, 201, 140, 96, 94, 95, 179, 141, 199, 259, 216, 204, 277, 247, 206, 228, 274, 196, 197, 278, 279, 280, 292, 293, 55, 181 )
+			-- AND c.category IN ( 253, 254, 255, 256, 250, 251, 252, 191, 190, 192, 237, 213, 236 )
+			-- AND c.category IN ( 102, 103, 244, 245, 248, 108, 149, 109, 137, 110, 111, 112, 113, 159, 115, 231, 136, 249, 232, 263, 233, 117, 160, 118, 119, 120, 121, 122, 123, 124, 133, 132, 134, 135, 138, 143, 125, 151, 126, 127, 128, 129, 130, 226, 208, 261, 262, 267, 264, 265, 266, 51 )
 		JOIN prefix_grade_items gi ON gi.courseid = c.id AND gi.itemtype = 'mod'
 		-- JOIN prefix_grade_grades gg ON gg.itemid = gi.id AND gg.userid = Student.id
 		JOIN prefix_grade_grades_history gh ON gh.itemid = gi.id AND gh.userid = Student.id
@@ -148,6 +154,9 @@ FROM
 		) Student ON Student.Cid = Trainer.Cid AND Student.id <> Trainer.id
 		JOIN prefix_course c ON c.id = Trainer.Cid
 			AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
+			-- AND c.category IN ( 227, 217, 82, 234, 83, 98, 155, 85, 271, 258, 100, 99, 84, 177, 275, 270, 157, 198, 210, 241, 195, 87, 88, 90, 276, 91, 92, 89, 272, 178, 156, 203, 205, 200, 243, 201, 140, 96, 94, 95, 179, 141, 199, 259, 216, 204, 277, 247, 206, 228, 274, 196, 197, 278, 279, 280, 292, 293, 55, 181 )
+			-- AND c.category IN ( 253, 254, 255, 256, 250, 251, 252, 191, 190, 192, 237, 213, 236 )
+			-- AND c.category IN ( 102, 103, 244, 245, 248, 108, 149, 109, 137, 110, 111, 112, 113, 159, 115, 231, 136, 249, 232, 263, 233, 117, 160, 118, 119, 120, 121, 122, 123, 124, 133, 132, 134, 135, 138, 143, 125, 151, 126, 127, 128, 129, 130, 226, 208, 261, 262, 267, 264, 265, 266, 51 )
 		JOIN prefix_grade_items gi ON gi.courseid = c.id AND gi.itemtype = 'mod'
 		JOIN prefix_grade_grades_history gh ON gh.itemid = gi.id AND gh.userid = Student.id
 		JOIN prefix_user ug ON ug.id = gh.usermodified
@@ -172,4 +181,4 @@ WHERE Merged.Student IS NOT NULL
 %%FILTER_STARTTIME:Merged.Grade_Timestamp:>%%
 %%FILTER_ENDTIME:Merged.Grade_Timestamp:<%%
 
-ORDER BY Merged.Raw_Trainer_Name ASC, Enrolment_Identifier DESC, Merged.Grade_Timestamp DESC
+ORDER BY Merged.Grade_Timestamp DESC, Merged.Raw_Trainer_Name ASC, Enrolment_Identifier DESC
