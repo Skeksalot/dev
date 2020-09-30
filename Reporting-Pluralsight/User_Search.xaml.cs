@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Reporting_Pluralsight
+namespace API_Reporting
 {
 	/// <summary>
 	/// Interaction logic for User_Search.xaml

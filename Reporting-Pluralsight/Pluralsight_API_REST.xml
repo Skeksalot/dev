@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Provider Name="Pluralsight" Token="9d181b54-e54c-4b2c-9625-4c4c9a1767a9" xlmns="">
+	<API Type="Licencing">
+	
+	</API>
+	<API Type="GraphQL" URL="https://paas-api.pluralsight.com/graphql" format="json">
+		<Endpoint Name="Query" key="dXBza2lsbGVk-87d0abaedec44d64bfd5db7885cac075-UExBTg==" >
+			<Object Name="users">
+				<First Type="Int"></First>
+				<After Type="String"></After>
+				<Filter Type="UserFilter">
+					<Value Name="isCurrent" Type="Boolean"></Value>
+					<Value Name="notes" Type="[String]"></Value>
+					<Value Name="ssoIdentifiers" Type="[String]"></Value>
+					<Value Name="emails" Type="[String]"></Value>
+				</Filter>
+				<Field Name="id"></Field>
+				<Field Name="email"></Field>
+				<Field Name="additionalEmails"></Field>
+				<Field Name="firstName"></Field>
+				<Field Name="lastName"></Field>
+				<Field Name="startedOn"></Field>
+				<Field Name="createdOn"></Field>
+				<Field Name="note"></Field>
+				<Field Name="team"></Field>
+				<Field Name="isOnAccount"></Field>
+				<Field Name="removedOn"></Field>
+				<Field Name="lastLogin"></Field>
+				<Field Name="ssoIdentifiers"></Field>
+				<Field Name="currentSsoIdentifier"></Field>
+				<Field Name="ssoEnabled"></Field>
+				<Field Name="planID"></Field>
+			</Object>
+			<Object Name="courseCatalog"></Object>
+			<Object Name="courseProgress"></Object>
+			<Object Name="channels"></Object>
+		</Endpoint>
+		<Endpoint Name="Mutation">
+
+		</Endpoint>
+	</API>
+	<API Type="Reporting">
+		<Endpoint Name="Users" Base="https://app.pluralsight.com/plans/api/reports/v1/users/upskilled">
+			<Option Name="Token" Required="True"></Option>
+			<Response>
+				<Field Name="UserId" CanBeEmpty="False"></Field>
+				<Field Name="FirstName" CanBeEmpty="False"></Field>
+				<Field Name="LastName" CanBeEmpty="False"></Field>
+				<Field Name="Email" CanBeEmpty="False"></Field>
+				<Field Name="TeamName" CanBeEmpty="True"></Field>
+				<Field Name="Note" CanBeEmpty="True"></Field>
+				<Field Name="StartDate" CanBeEmpty="True"></Field>
+			</Response>
+		</Endpoint>
+		<Endpoint Name="Content Completion" Base="https://app.pluralsight.com/plans/api/reports/v1/content-completion/upskilled">
+			<Option Name="Token" Required="True"></Option>
+			<Option Name="StartDate" Required="False"></Option>
+			<Option Name="EndDate" Required="False"></Option>
+			<Response>
+				<Field Name="UserId" CanBeEmpty="False"></Field>
+				<Field Name="FirstName" CanBeEmpty="False"></Field>
+				<Field Name="LastName" CanBeEmpty="False"></Field>
+				<Field Name="Email" CanBeEmpty="False"></Field>
+				<Field Name="TeamName" CanBeEmpty="True"></Field>
+				<Field Name="Note" CanBeEmpty="True"></Field>
+				<Field Name="IsOnAccount" CanBeEmpty="False"></Field>
+				<Field Name="ContentType" CanBeEmpty="False"></Field>
+				<Field Name="ContentId" CanBeEmpty="False"></Field>
+				<Field Name="ContentSlug" CanBeEmpty="False"></Field>
+				<Field Name="ContentName" CanBeEmpty="False"></Field>
+				<Field Name="FirstActivityDate" CanBeEmpty="False"></Field>
+				<Field Name="PercentComplete" CanBeEmpty="False"></Field>
+				<Field Name="CompletionStatus" CanBeEmpty="False"></Field>
+				<Field Name="CompletionDate" CanBeEmpty="False"></Field>
+			</Response>
+		</Endpoint>
+		<Endpoint Name="Content Usage" Base="https://app.pluralsight.com/plans/api/reports/v1/content-usage/upskilled">
+			<Option Name="Token" Required="True"></Option>
+			<Option Name="StartDate" Required="False"></Option>
+			<Option Name="EndDate" Required="False"></Option>
+			<Response>
+				<Field Name="UserId" CanBeEmpty="False"></Field>
+				<Field Name="FirstName" CanBeEmpty="False"></Field>
+				<Field Name="LastName" CanBeEmpty="False"></Field>
+				<Field Name="Email" CanBeEmpty="False"></Field>
+				<Field Name="TeamName" CanBeEmpty="True"></Field>
+				<Field Name="Note" CanBeEmpty="True"></Field>
+				<Field Name="IsOnAccount" CanBeEmpty="False"></Field>
+				<Field Name="ContentType" CanBeEmpty="False"></Field>
+				<Field Name="ContentId" CanBeEmpty="False"></Field>
+				<Field Name="ContentSlug" CanBeEmpty="False"></Field>
+				<Field Name="ContentName" CanBeEmpty="False"></Field>
+				<Field Name="ViewDate" CanBeEmpty="False"></Field>
+				<Field Name="UsageInSeconds" CanBeEmpty="False"></Field>
+			</Response>
+		</Endpoint>
+		<Endpoint Name="Course Completion" Base="https://app.pluralsight.com/plans/api/reports/v1/course-completion/upskilled">
+			<Option Name="Token" Required="True"></Option>
+			<Option Name="StartDate" Required="False"></Option>
+			<Option Name="EndDate" Required="False"></Option>
+			<Response>
+				<Field Name="UserId" CanBeEmpty="False"></Field>
+				<Field Name="FirstName" CanBeEmpty="False"></Field>
+				<Field Name="LastName" CanBeEmpty="False"></Field>
+				<Field Name="Email" CanBeEmpty="False"></Field>
+				<Field Name="TeamName" CanBeEmpty="True"></Field>
+				<Field Name="Note" CanBeEmpty="True"></Field>
+				<Field Name="IsOnAccount" CanBeEmpty="False"></Field>
+				<Field Name="CourseId" CanBeEmpty="False"></Field>
+				<Field Name="CourseName" CanBeEmpty="False"></Field>
+				<Field Name="FirstViewDate" CanBeEmpty="False"></Field>
+				<Field Name="CompletionDate" CanBeEmpty="False"></Field>
+				<Field Name="CompletionStatus" CanBeEmpty="False"></Field>
+			</Response>
+		</Endpoint>
+		<Endpoint Name="Course Usage" Base="https://app.pluralsight.com/plans/api/reports/v1/course-usage/upskilled">
+			<Option Name="token" Required="True"></Option>
+			<Option Name="StartDate" Required="False"></Option>
+			<Option Name="EndDate" Required="False"></Option>
+			<Response>
+				<Field Name="UserId" CanBeEmpty="False"></Field>
+				<Field Name="FirstName" CanBeEmpty="False"></Field>
+				<Field Name="LastName" CanBeEmpty="False"></Field>
+				<Field Name="Email" CanBeEmpty="False"></Field>
+				<Field Name="TeamName" CanBeEmpty="True"></Field>
+				<Field Name="Note" CanBeEmpty="True"></Field>
+				<Field Name="IsOnAccount" CanBeEmpty="False"></Field>
+				<Field Name="CourseId" CanBeEmpty="False"></Field>
+				<Field Name="CourseName" CanBeEmpty="False"></Field>
+				<Field Name="ViewDate" CanBeEmpty="False"></Field>
+				<Field Name="UsageInSeconds" CanBeEmpty="False"></Field>
+			</Response>
+		</Endpoint>
+	</API>
+</Provider>

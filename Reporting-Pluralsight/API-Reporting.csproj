@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -58,7 +61,7 @@
     <Compile Include="User_Search.xaml.cs">
       <DependentUpon>User_Search.xaml</DependentUpon>
     </Compile>
-    <Page Include="Pluralsight_Course_Usage.xaml">
+    <Page Include="Pluralsight_API_Report.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -70,8 +73,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Pluralsight_Course_Usage.xaml.cs">
-      <DependentUpon>Pluralsight_Course_Usage.xaml</DependentUpon>
+    <Compile Include="Pluralsight_API_Report.xaml.cs">
+      <DependentUpon>Pluralsight_API_Report.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -107,6 +110,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -128,7 +132,7 @@
     <Resource Include="LinkedIn_Learning.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Pluralsight_API.xml" />
+    <Resource Include="Pluralsight_API_REST.xml" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="api_icon.png" />
@@ -136,6 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Logo White Wordmark Stacked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pluralsight_API.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

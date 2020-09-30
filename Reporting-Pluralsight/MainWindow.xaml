@@ -1,8 +1,8 @@
-﻿<NavigationWindow x:Class="Reporting_Pluralsight.MainWindow"
+﻿<NavigationWindow x:Class="API_Reporting.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Reporting_Pluralsight"
+        xmlns:local="clr-namespace:API_Reporting"
         mc:Ignorable="d"
-        Title="Pluralsight Reporting via API" Height="450" Width="800" Source="API_Controller.xaml" Icon="Primary-gradient.png" WindowStartupLocation="CenterScreen"/>
+        Title="eLearning Data Access" Height="450" Width="800" Source="API_Controller.xaml" Icon="Primary-gradient.png" WindowStartupLocation="CenterScreen"/>
