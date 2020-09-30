@@ -41,37 +41,45 @@ FROM
 
 		FROM
 		(
-			SELECT DISTINCT t.firstname, t.lastname, t.id, e.courseid Cid
+			SELECT DISTINCT u.firstname, u.lastname, u.id, e.courseid Cid, Groups.groupid Gid, Groups.name Gname
+			FROM prefix_enrol e
+			JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
+			JOIN prefix_user u ON u.id = ue.userid
+			JOIN prefix_role_assignments ra ON ra.userid = u.id AND ra.roleid = 5
+			JOIN prefix_context x ON x.contextlevel = 50 AND x.id = ra.contextid AND x.instanceid = e.courseid
+			LEFT JOIN (
+				SELECT gm.id groupmemberid, gm.timeadded, gm.groupid linkedgroupid, gm.userid, g.id groupid, g.name, g.courseid
+				FROM prefix_groups_members gm
+				JOIN prefix_groups g ON g.id = gm.groupid
+			) Groups ON Groups.userid = u.id AND Groups.courseid = e.courseid
+			-- WHERE u.suspended = 0
+			-- AND ue.status = 0
+			-- AND ue.timeend = ''
+		) Student
+		JOIN
+		(
+			SELECT DISTINCT t.firstname, t.lastname, t.id, e.courseid Cid, Groupst.groupid Gid
 			FROM prefix_enrol e
 			JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
 			JOIN prefix_user t ON t.id = ue.userid
-			JOIN prefix_role_assignments ra ON ra.userid = t.id AND ra.roleid IN (3, 4)
-			JOIN prefix_context x ON x.contextlevel = 50 AND x.id = ra.contextid AND x.instanceid = e.courseid
-			
-			WHERE t.firstname IS NOT NULL
-			AND t.lastname IS NOT NULL
-			AND t.suspended = 0
+			JOIN prefix_role_assignments rat ON rat.userid = t.id AND rat.roleid IN (3, 4)
+			JOIN prefix_context xt ON xt.contextlevel = 50 AND xt.id = rat.contextid AND xt.instanceid = e.courseid
+			LEFT JOIN (
+				SELECT gm.id groupmemberid, gm.timeadded, gm.groupid linkedgroupid, gm.userid, g.id groupid, g.name, g.courseid
+				FROM prefix_groups_members gm
+				JOIN prefix_groups g ON g.id = gm.groupid
+			) Groupst ON Groupst.userid = t.id AND Groupst.courseid = e.courseid
+			WHERE t.suspended = 0
 			AND ue.status = 0
 			AND ue.timeend = ''
-		) Trainer
-		JOIN
-		(
-			SELECT DISTINCT u.firstname, u.lastname, u.id, es.courseid Cid, u.email
-			FROM prefix_enrol es
-			JOIN prefix_user_enrolments ues ON ues.enrolid = es.id
-			JOIN prefix_user u ON u.id = ues.userid
-			JOIN prefix_role_assignments ras ON ras.userid = u.id AND ras.roleid = 5
-			JOIN prefix_context xs ON xs.contextlevel = 50 AND xs.id = ras.contextid AND xs.instanceid = es.courseid
-			
-			WHERE u.firstname IS NOT NULL
-			AND u.lastname IS NOT NULL
-			/*AND u.suspended = 0
-			AND ues.status = 0
-			AND ues.timeend = ''*/
-		) Student ON Student.Cid = Trainer.Cid AND Student.id <> Trainer.id
+		) Trainer ON Trainer.Cid = Student.Cid AND Trainer.id <> Student.id
 		JOIN prefix_course c ON c.id = Trainer.Cid
 			AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
+<<<<<<< HEAD
 			-- AND c.category IN ( 227, 217, 82, 234, 83, 98, 155, 85, 271, 258, 100, 99, 84, 177, 275, 270, 157, 198, 210, 241, 292, 293, 195, 87, 88, 276, 90, 91, 92, 89, 272, 178, 156, 203, 205, 200, 243, 201, 140, 278, 96, 279, 94, 280, 95, 179, 141, 199, 259, 216, 204, 277, 247, 206, 228, 274, 196, 197 )
+=======
+			-- AND c.category IN ( 227, 217, 82, 234, 83, 98, 155, 85, 271, 258, 100, 99, 84, 177, 275, 270, 157, 198, 210, 241, 195, 87, 88, 90, 276, 91, 92, 89, 272, 178, 156, 203, 205, 200, 243, 201, 140, 96, 94, 95, 179, 141, 199, 259, 216, 204, 277, 247, 206, 228, 274, 196, 197, 278, 279, 280, 292, 293, 55, 181 )
+>>>>>>> abe2b29f3a41a079be43a2daf5f5a43c01af761a
 			-- AND c.category IN ( 253, 254, 255, 256, 250, 251, 252, 191, 190, 192, 237, 213, 236 )
 			-- AND c.category IN ( 102, 103, 244, 245, 248, 108, 149, 109, 137, 110, 111, 112, 113, 159, 115, 231, 136, 249, 232, 263, 233, 117, 160, 118, 119, 120, 121, 122, 123, 124, 133, 132, 134, 135, 138, 143, 125, 151, 126, 127, 128, 129, 130, 226, 208, 261, 262, 267, 264, 265, 266, 51 )
 		JOIN prefix_grade_items gi ON gi.courseid = c.id AND gi.itemtype = 'mod'
@@ -79,13 +87,11 @@ FROM
 		JOIN prefix_grade_grades_history gh ON gh.itemid = gi.id AND gh.userid = Student.id
 		JOIN prefix_user ug ON ug.id = gh.usermodified
 		JOIN prefix_course_modules cm ON cm.course = c.id AND cm.instance = gi.iteminstance
-		LEFT JOIN prefix_groups_members gm ON gm.userid = Student.id
-		LEFT JOIN prefix_groups g ON g.id = gm.groupid AND g.courseid = c.id
 
 		WHERE LOWER(gi.itemname) LIKE 'assessment -%'
 		AND gi.itemname NOT LIKE 'Assessment - IT Foundations Course'
 		AND gi.hidden = 0
-		AND g.id IS NULL
+		AND Student.Gid IS NULL
 		AND gh.finalgrade IS NOT NULL
 		AND gh.action IN (1, 2)
 		AND ug.id IS NOT NULL
@@ -124,51 +130,56 @@ FROM
 		
 		FROM
 		(
-			SELECT DISTINCT t.firstname, t.lastname, t.id, e.courseid Cid
+			SELECT DISTINCT u.firstname, u.lastname, u.id, e.courseid Cid, Groups.groupid Gid, Groups.name Gname
+			FROM prefix_enrol e
+			JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
+			JOIN prefix_user u ON u.id = ue.userid
+			JOIN prefix_role_assignments ra ON ra.userid = u.id AND ra.roleid = 5
+			JOIN prefix_context x ON x.contextlevel = 50 AND x.id = ra.contextid AND x.instanceid = e.courseid
+			LEFT JOIN (
+				SELECT gm.id groupmemberid, gm.timeadded, gm.groupid linkedgroupid, gm.userid, g.id groupid, g.name, g.courseid
+				FROM prefix_groups_members gm
+				JOIN prefix_groups g ON g.id = gm.groupid
+			) Groups ON Groups.userid = u.id AND Groups.courseid = e.courseid
+			-- WHERE u.suspended = 0
+			-- AND ue.status = 0
+			-- AND ue.timeend = ''
+		) Student
+		JOIN
+		(
+			SELECT DISTINCT t.firstname, t.lastname, t.id, e.courseid Cid, Groupst.groupid Gid
 			FROM prefix_enrol e
 			JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
 			JOIN prefix_user t ON t.id = ue.userid
-			JOIN prefix_role_assignments ra ON ra.userid = t.id AND ra.roleid IN (3, 4, 17, 18)
-			JOIN prefix_context x ON x.contextlevel = 50 AND x.id = ra.contextid AND x.instanceid = e.courseid
-			
-			WHERE t.firstname IS NOT NULL
-			AND t.lastname IS NOT NULL
-			AND t.suspended = 0
+			JOIN prefix_role_assignments rat ON rat.userid = t.id AND rat.roleid IN (3, 4)
+			JOIN prefix_context xt ON xt.contextlevel = 50 AND xt.id = rat.contextid AND xt.instanceid = e.courseid
+			LEFT JOIN (
+				SELECT gm.id groupmemberid, gm.timeadded, gm.groupid linkedgroupid, gm.userid, g.id groupid, g.name, g.courseid
+				FROM prefix_groups_members gm
+				JOIN prefix_groups g ON g.id = gm.groupid
+			) Groupst ON Groupst.userid = t.id AND Groupst.courseid = e.courseid
+			WHERE t.suspended = 0
 			AND ue.status = 0
 			AND ue.timeend = ''
-		) Trainer
-		JOIN
-		(
-			SELECT DISTINCT u.firstname, u.lastname, u.id, es.courseid Cid, u.email
-			FROM prefix_enrol es
-			JOIN prefix_user_enrolments ues ON ues.enrolid = es.id
-			JOIN prefix_user u ON u.id = ues.userid
-			JOIN prefix_role_assignments ras ON ras.userid = u.id AND ras.roleid = 5
-			JOIN prefix_context xs ON xs.contextlevel = 50 AND xs.id = ras.contextid AND xs.instanceid = es.courseid
-			
-			WHERE u.firstname IS NOT NULL
-			AND u.lastname IS NOT NULL
-			/*AND u.suspended = 0
-			AND ues.status = 0
-			AND ues.timeend = ''*/
-		) Student ON Student.Cid = Trainer.Cid AND Student.id <> Trainer.id
+		) Trainer ON Trainer.Cid = Student.Cid AND Trainer.id <> Student.id
 		JOIN prefix_course c ON c.id = Trainer.Cid
 			AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
+<<<<<<< HEAD
 			-- AND c.category IN ( 227, 217, 82, 234, 83, 98, 155, 85, 271, 258, 100, 99, 84, 177, 275, 270, 157, 198, 210, 241, 292, 293, 195, 87, 88, 276, 90, 91, 92, 89, 272, 178, 156, 203, 205, 200, 243, 201, 140, 278, 96, 279, 94, 280, 95, 179, 141, 199, 259, 216, 204, 277, 247, 206, 228, 274, 196, 197 )
+=======
+			-- AND c.category IN ( 227, 217, 82, 234, 83, 98, 155, 85, 271, 258, 100, 99, 84, 177, 275, 270, 157, 198, 210, 241, 195, 87, 88, 90, 276, 91, 92, 89, 272, 178, 156, 203, 205, 200, 243, 201, 140, 96, 94, 95, 179, 141, 199, 259, 216, 204, 277, 247, 206, 228, 274, 196, 197, 278, 279, 280, 292, 293, 55, 181 )
+>>>>>>> abe2b29f3a41a079be43a2daf5f5a43c01af761a
 			-- AND c.category IN ( 253, 254, 255, 256, 250, 251, 252, 191, 190, 192, 237, 213, 236 )
 			-- AND c.category IN ( 102, 103, 244, 245, 248, 108, 149, 109, 137, 110, 111, 112, 113, 159, 115, 231, 136, 249, 232, 263, 233, 117, 160, 118, 119, 120, 121, 122, 123, 124, 133, 132, 134, 135, 138, 143, 125, 151, 126, 127, 128, 129, 130, 226, 208, 261, 262, 267, 264, 265, 266, 51 )
 		JOIN prefix_grade_items gi ON gi.courseid = c.id AND gi.itemtype = 'mod'
 		JOIN prefix_grade_grades_history gh ON gh.itemid = gi.id AND gh.userid = Student.id
 		JOIN prefix_user ug ON ug.id = gh.usermodified
 		JOIN prefix_course_modules cm ON cm.course = c.id AND cm.instance = gi.iteminstance
-		JOIN prefix_groups_members gm ON gm.userid = Student.id
-		JOIN prefix_groups g ON g.id = gm.groupid AND g.courseid = c.id
-		JOIN prefix_groups_members gmt ON gmt.groupid = g.id AND gmt.userid = Trainer.id
 
 		WHERE LOWER(gi.itemname) LIKE 'assessment -%'
 		AND gi.itemname NOT LIKE 'Assessment - IT Foundations Course'
 		AND gi.hidden = 0
-		AND g.id IS NOT NULL
+		AND Student.Gid IS NOT NULL
 		AND gh.action IN (1, 2)
 		AND gh.finalgrade IS NOT NULL
 		AND ug.id IS NOT NULL
