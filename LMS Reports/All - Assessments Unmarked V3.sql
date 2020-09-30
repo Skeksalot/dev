@@ -26,10 +26,6 @@ FROM (
 	FROM (
 		SELECT DISTINCT e.courseid course_id, u.id student_id, CONCAT(u.firstname, ' ', u.lastname) student_name,
 		ue.status student_status, ue.timeend student_end, Groups.groupid student_groupid, Groups.name student_group, x.instanceid student_context_instanceid
-<<<<<<< HEAD
-		
-=======
->>>>>>> abe2b29f3a41a079be43a2daf5f5a43c01af761a
 		FROM prefix_enrol e
 		JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
 		JOIN prefix_user u ON u.id = ue.userid
@@ -46,11 +42,7 @@ FROM (
 	) Students
 	JOIN (
 		SELECT DISTINCT e.courseid course_id, t.id trainer_id, CONCAT(t.firstname, ' ', t.lastname) trainer_name,
-<<<<<<< HEAD
-		uet.status trainer_status, uet.timeend trainer_end, Groupst.groupid trainer_groupid, Groupst.name trainer_group, xt.instanceid trainer_context_instanceid
-=======
 		ue.status trainer_status, ue.timeend trainer_end, Groupst.groupid trainer_groupid, Groupst.name trainer_group, xt.instanceid trainer_context_instanceid
->>>>>>> abe2b29f3a41a079be43a2daf5f5a43c01af761a
 		FROM prefix_enrol e
 		JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
 		JOIN prefix_user t ON t.id = ue.userid
