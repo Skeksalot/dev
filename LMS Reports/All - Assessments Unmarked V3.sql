@@ -22,7 +22,6 @@ FROM (
 	FROM (
 		SELECT DISTINCT e.courseid course_id, u.id student_id, CONCAT(u.firstname, ' ', u.lastname) student_name,
 		ue.status student_status, ue.timeend student_end, Groups.groupid student_groupid, Groups.name student_group, x.instanceid student_context_instanceid
-		
 		FROM prefix_enrol e
 		JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
 		JOIN prefix_user u ON u.id = ue.userid
@@ -39,10 +38,10 @@ FROM (
 	) Students
 	JOIN (
 		SELECT DISTINCT e.courseid course_id, t.id trainer_id, CONCAT(t.firstname, ' ', t.lastname) trainer_name,
-		uet.status trainer_status, uet.timeend trainer_end, Groupst.groupid trainer_groupid, Groupst.name trainer_group, xt.instanceid trainer_context_instanceid
+		ue.status trainer_status, ue.timeend trainer_end, Groupst.groupid trainer_groupid, Groupst.name trainer_group, xt.instanceid trainer_context_instanceid
 		FROM prefix_enrol e
-		JOIN prefix_user_enrolments uet ON uet.enrolid = e.id
-		JOIN prefix_user t ON t.id = uet.userid
+		JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
+		JOIN prefix_user t ON t.id = ue.userid
 		JOIN prefix_role_assignments rat ON rat.userid = t.id AND rat.roleid IN (3, 4)
 		JOIN prefix_context xt ON xt.contextlevel = 50 AND xt.id = rat.contextid AND xt.instanceid = e.courseid
 		LEFT JOIN (
@@ -51,8 +50,8 @@ FROM (
 			JOIN prefix_groups g ON g.id = gm.groupid
 		) Groupst ON Groupst.userid = t.id AND Groupst.courseid = e.courseid
 		WHERE t.suspended = 0
-		AND uet.status = 0
-		AND uet.timeend = ''
+		AND ue.status = 0
+		AND ue.timeend = ''
 	) Trainers ON Trainers.course_id = Students.course_id AND Trainers.trainer_id <> Students.student_id
 	JOIN prefix_course c ON c.id = Students.course_id
 			AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
