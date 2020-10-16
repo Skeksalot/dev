@@ -45,11 +45,14 @@ namespace API_Reporting
 			if (pluralsightQueryListBox.SelectedItem != null)
 			{
 				// Retrieve value in selected item
-				XmlElement selectedNode = (XmlElement)this.pluralsightQueryListBox.SelectedItem;
+				XmlElement selectedNode = pluralsightQueryListBox.SelectedItem as XmlElement;
 				string value = selectedNode.GetAttribute("Name");
 				// View selected report
-				Pluralsight_API_Report reportPage = new Pluralsight_API_Report(value);
-				reportPage.Header.Content = value;
+				var dict = new Dictionary<string, string>
+				{
+					{"report", value},
+				};
+				Pluralsight_API_Report reportPage = new Pluralsight_API_Report(dict);
 				NavigationService.Navigate(reportPage);
 			}
 			else
@@ -58,6 +61,7 @@ namespace API_Reporting
 			}
 		}
 		
+		// Navbar controls
 		private void Nav_To_Home(object sender, RoutedEventArgs e)
 		{
 			API_Controller home = new API_Controller();
@@ -111,6 +115,11 @@ namespace API_Reporting
 			{
 				InfoTree.Height = 0;
 			}
+		}
+
+		private void pluralsightQueryListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			Run_Query_Button.IsEnabled = true;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Provider Name="Pluralsight">
+	<!-- REMOVE EXPOSED KEY HERE BEFORE RELEASE -->
 	<API Name="GraphQL" URL="https://paas-api.pluralsight.com/graphql" key="dXBza2lsbGVk-87d0abaedec44d64bfd5db7885cac075-UExBTg==" format="json">
 		<Query Name="Users-all" Desc="This query returns all users that have ever been licensed through our account.">
 			<Object Name="users">

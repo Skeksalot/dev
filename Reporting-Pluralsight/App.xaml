@@ -259,12 +259,6 @@
             <Setter Property="Label.Foreground" Value="#FFFFFFFF"></Setter>
         </Style>
 
-        <!-- Label style -->
-        <Style x:Key="labelStyle" TargetType="{x:Type Label}">
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-        </Style>
-
         <!-- DataGrid header style -->
         <Style x:Key="columnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
             <Setter Property="Height" Value="35" />
@@ -298,6 +292,23 @@
 			<Setter Property="FontFamily" Value="Mont Semibold" />
 		</Style>
 
+		<!-- Standard label style -->
+		<Style x:Key="labelStyle" TargetType="{x:Type Label}">
+			<Setter Property="Padding" Value="2" />
+			<Setter Property="FontFamily" Value="Mont" />
+			<Setter Property="Foreground" Value="Black" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+			<Setter Property="HorizontalAlignment" Value="Left" />
+		</Style>
+		
+		<!-- Standard textblock style -->
+		<Style x:Key="textblockStyle" TargetType="{x:Type TextBlock}">
+			<Setter Property="Padding" Value="12" />
+			<Setter Property="FontFamily" Value="Mont" />
+			<Setter Property="Background" Value="White" />
+			<Setter Property="Foreground" Value="Black" />
+		</Style>
+		
         <!-- Button style -->
 		<Style x:Key="buttonStyle" TargetType="{x:Type Button}">
 			<Setter Property="Margin" Value="10" />
@@ -346,6 +357,43 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
-		
+
+		<!-- Breadcrumb Button style -->
+		<Style x:Key="breadcrumbButtonStyle" TargetType="{x:Type Button}">
+			<Setter Property="Margin" Value="8,0,0,8" />
+			<Setter Property="Padding" Value="0" />
+			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="HorizontalAlignment" Value="Center" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="BorderBrush" Value="{x:Null}" />
+			<Setter Property="FontFamily" Value="Mont Semibold" />
+			<Setter Property="Foreground" Value="#FFFFFFFF" />
+			<Setter Property="Background" Value="{x:Null}" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+							<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Background" Value="{x:Null}" />
+								<Setter Property="Opacity" Value="0.75" />
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="Background" Value="{x:Null}" />
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="False">
+								<Setter Property="Opacity" Value="0.5"/>
+								<Setter Property="Cursor" Value="Arrow"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
 	</Application.Resources>
 </Application>

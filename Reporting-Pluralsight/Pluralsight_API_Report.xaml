@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Pluralsight Activity Reporting"
-	  Style="{StaticResource defaultPageStyle}">
+	  Style="{StaticResource defaultPageStyle}" Loaded="Page_Loaded">
 
 	<Grid Style="{StaticResource baseGridStyle}">
 		<Grid.ColumnDefinitions>
@@ -27,7 +27,7 @@
 		</Grid.Resources>
 
 		<!-- Left Nav Bar -->
-		<StackPanel Style="{StaticResource navPanelStyle}" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3">
+		<StackPanel Grid.Column="0" Style="{StaticResource navPanelStyle}">
 			<Button Click="Nav_To_Home" Style="{StaticResource navButtonStyle}">
 				<Button.ToolTip>
 					<TextBlock>Home</TextBlock>
@@ -48,7 +48,7 @@
 			</Button>
 		</StackPanel>
 
-		<Grid Grid.Column="1" Grid.Row="0" Style="{StaticResource baseGridStyle}">
+		<Grid Grid.Column="1" Style="{StaticResource baseGridStyle}">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 			</Grid.ColumnDefinitions>
@@ -58,7 +58,7 @@
 				<RowDefinition/>
 			</Grid.RowDefinitions>
 
-			<Grid Grid.Column="0" Grid.Row="0" Style="{StaticResource baseGridStyle}">
+			<Grid Name="Header"  Grid.Column="0" Style="{StaticResource baseGridStyle}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="72" />
 					<ColumnDefinition />
@@ -67,17 +67,106 @@
 					<RowDefinition />
 				</Grid.RowDefinitions>
 				
-				<Image Grid.Column="0" Grid.Row="0" Source="Pluralsight.png" Style="{StaticResource headerIconStyle}" />
-				<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource headerTextStyle}">
+				<Image Grid.Column="0" Source="Pluralsight.png" Style="{StaticResource headerIconStyle}" />
+				<Label Grid.Column="1" Style="{StaticResource headerTextStyle}">
 					Pluralsight Activity Reporting
 				</Label>
 			</Grid>
 
-			<Border Grid.Column="0" Grid.Row="1" Style="{StaticResource listHeaderStyle}">
-				<Label Name="Header" Style="{StaticResource listHeaderTextStyle}">/Report Page/</Label>
+			<Border Grid.Row="1" Name="SubHeader" Style="{StaticResource listHeaderStyle}">
+				<StackPanel Name="Breadcrumbs" Orientation="Horizontal">
+					<Button Name="Breadcrumb_Back" Style="{StaticResource breadcrumbButtonStyle}" Click="Breadcrumb_Back_Click">&lt;</Button>
+					<Label Name="SubHeaderText" Content="*Report Page*" Style="{StaticResource listHeaderTextStyle}" />
+				</StackPanel>
 			</Border>
 
-			<DataGrid Grid.Column="0" Grid.Row="2"></DataGrid>
+			<MediaElement Grid.Row="2" Name="Loading" Height="64" Width="64" HorizontalAlignment="Center" VerticalAlignment="Center" Source="file://C:\Users\andrews\Documents\GitHub\Dev\Reporting-Pluralsight\Logo - Secondary.gif" Panel.ZIndex="100" LoadedBehavior="Manual" MediaEnded="Loading_MediaEnded" Loaded="Loading_Loaded" />
+
+			<Grid Grid.Row="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+
+				<Grid.Resources>
+					<!-- Template for individual users -->
+					<DataTemplate x:Key="UserTemplate">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="2*" />
+								<ColumnDefinition Width="10*" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Source="{Binding Path=icon}" Width="32" Height="32" Margin="0,0,4,0" />
+							<StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+								<Label Style="{StaticResource labelStyle}" Content="{Binding Path=firstName}" FontWeight="Bold" />
+								<Label Style="{StaticResource labelStyle}" Content="{Binding Path=lastName}" FontWeight="Bold" />
+							</StackPanel>
+							<Label Grid.Column="1" Grid.Row="1" Style="{StaticResource labelStyle}" Content="{Binding Path=email}" />
+						</Grid>
+					</DataTemplate>
+				</Grid.Resources>
+				
+				<ListBox Grid.Column="0" Name="UserList" BorderThickness="0" ItemTemplate="{StaticResource UserTemplate}" SelectionChanged="UserList_SelectionChanged">
+					<ListBox.BorderBrush>
+						<SolidColorBrush Color="{DynamicResource UpsMediumGrey}"/>
+					</ListBox.BorderBrush>
+				</ListBox>
+
+				<Grid Grid.Column="1" Style="{StaticResource baseGridStyle}" Background="White">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Grid.DataContext>
+						<Binding ElementName="UserList" Path="SelectedItem" />
+					</Grid.DataContext>
+
+					<TextBlock Grid.Row="0" Name="UserProfile" Style="{StaticResource textblockStyle}" Visibility="Hidden">
+						<Run Text="Name:" FontWeight="Bold" />
+						<LineBreak/>
+						<Run Text="{Binding Path=firstName}" />
+						<Run Text="{Binding Path=lastName}" />
+						<LineBreak/>
+						<Run Text="Primary Email:" FontWeight="Bold" />
+						<LineBreak/>
+						<Run Text="{Binding Path=email}" />
+						<LineBreak/>
+						<Run Text="Additional Emails:" FontWeight="Bold" />
+						<LineBreak/>
+						<Run Text="Start Date:" FontWeight="Bold" />
+						<LineBreak/>
+						<Run Text="{Binding Path=createdOn}" />
+						<LineBreak/>
+						<Run Text="Account Status:" FontWeight="Bold" />
+						<LineBreak/>
+						<Run Text="{Binding Path=status}" />
+						<LineBreak/>
+						<Run Text="Removal Date:" FontWeight="Bold" />
+						<LineBreak/>
+						<Run Text="{Binding Path=removedOn}" />
+						<LineBreak/>
+						<Run Text="Last Login:" FontWeight="Bold" />
+						<LineBreak/>
+						<Run Text="{Binding Path=lastLogin}" />
+					</TextBlock>
+					<StackPanel Grid.Row="1" Name="UserActions" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="Hidden">
+						<Button Name="UserAction_Activate" Style="{StaticResource buttonStyle}" IsEnabled="False">Activate</Button>
+						<Button Name="UserAction_Deactivate" Style="{StaticResource buttonStyle}" IsEnabled="False">Deactivate</Button>
+						<Button Name="UserAction_Activity" Style="{StaticResource buttonStyle}" IsEnabled="False">View Activity</Button>
+					</StackPanel>
+				</Grid>
+			</Grid>
 		</Grid>
 	</Grid>
 </Page>

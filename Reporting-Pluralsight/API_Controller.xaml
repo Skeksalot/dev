@@ -86,7 +86,10 @@
 					</Border>
 					<ListBox Grid.Column="0" Grid.Row="2" Name="pluralsightQueryListBox" 
 					 ItemsSource="{Binding Source={StaticResource APIDataSource}, XPath=API/Query}"
-					 ItemTemplate="{StaticResource nameItemTemplate}" BorderThickness="0,0,1,0" BorderBrush="#aaaab4" FontFamily="Mont">
+					 ItemTemplate="{StaticResource nameItemTemplate}" BorderThickness="0,0,1,0" FontFamily="Mont" SelectionChanged="pluralsightQueryListBox_SelectionChanged">
+						<ListBox.BorderBrush>
+							<SolidColorBrush Color="{DynamicResource UpsMediumGrey}"/>
+						</ListBox.BorderBrush>
 						<ListBox.Background>
 							<SolidColorBrush Color="White"/>
 						</ListBox.Background>
@@ -137,7 +140,7 @@
 					<!-- View report button -->
 					<Border Name="ActionsWrapper" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" BorderBrush="#aaaab4" BorderThickness="0,1,0,0" VerticalAlignment="Center" Background="White">
 						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-							<Button Name="Run_Query_Button" Click="Run_Query" Style="{StaticResource buttonStyle}" HorizontalAlignment="Right">Run Query</Button>
+							<Button Name="Run_Query_Button" Click="Run_Query" Style="{StaticResource buttonStyle}" HorizontalAlignment="Right" IsEnabled="False">Run Query</Button>
 						</StackPanel>
 					</Border>
 
