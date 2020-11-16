@@ -1,5 +1,5 @@
 /*
-https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=167
+https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=284
 */
 SELECT DISTINCT a.name Assessment, a.attemptreopenmethod Extra_Attempts,
 	CASE
@@ -31,9 +31,8 @@ SELECT DISTINCT a.name Assessment, a.attemptreopenmethod Extra_Attempts,
 		ELSE 'Yes'
 	END Files_Enabled,
 	apcMaxFiles.value Files_Max_Files,
-	( apcMaxFileSize.value / (1024*1024)) Files_Max_File_Size,
-	GROUP_CONCAT( DISTINCT CONCAT( '<a target="_new" href="%%WWWROOT%%/course/modedit.php', char(63), 'up', 'date=', cm.id, '">', c.shortname, '</a>' ) ORDER BY cm.id SEPARATOR ' ' ) Assessment_Link,
-	COUNT(a.id) Total
+	( apcMaxFileSize.value / (1024*1024) ) Files_Max_File_Size,
+	CONCAT( '<a target="_new" href="%%WWWROOT%%/course/modedit.php', char(63), 'up', 'date=', cm.id, '">', c.shortname, '</a>' ) Assessment_Link
 
 FROM prefix_course c
 JOIN prefix_assign a ON a.course = c.id
@@ -50,7 +49,3 @@ AND ( a.attemptreopenmethod <> 'manual'
 	OR ( a.cutoffdate <> 0 OR a.duedate <> 0 OR a.allowsubmissionsfromdate <> 0 ) )
 	OR ( apcEnabled.value <> 1 OR apcMaxFiles.value <> 15 OR apcMaxFileSize.value <> 0 )
 AND LOWER(a.name) REGEXP 'assessment -'
-
-GROUP BY Assessment, Extra_Attempts, Max_Attempts, Allow_Drafts, Require_Submit, Open_Date, Due_Date, Cutoff_Date, Files_Enabled, Files_Max_Files, Files_Max_File_Size
-
-ORDER BY Assessment, Extra_Attempts, Max_Attempts, Allow_Drafts, Require_Submit, Open_Date, Due_Date, Cutoff_Date, Files_Enabled, Files_Max_Files, Files_Max_File_Size

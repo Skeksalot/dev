@@ -27,7 +27,7 @@ SELECT DISTINCT
 		WHEN cm.module = 20 THEN 'LTI'
 		WHEN cm.module = 15 THEN 'SCORM'
 		WHEN cm.module = 13 THEN 'Quiz'
-		ELSE 'Unknown' 
+		ELSE 'Unknown'
 	END Assessment_Type
 
 FROM
