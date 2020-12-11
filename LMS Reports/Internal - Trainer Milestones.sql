@@ -15,7 +15,8 @@ SELECT DISTINCT Trainer, Course, Student, Enrolment_Identifier, FROM_UNIXTIME(La
 	CASE
 		WHEN ( Completed_Assessment_Items >= CEILING( (Total_Assessment_Items - CT_Granted - Auto_Marked) * 0.6 ) ) THEN 'Yes'
 		ELSE 'No'
-	END Milestone2_Status
+	END Milestone2_Status,
+	Last_Grader Last_Grader_Full
 
 FROM (
 	(
@@ -56,7 +57,7 @@ FROM (
 			END ) Auto_Marked,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
 		GROUP_CONCAT( CASE
-						WHEN ( ug.id != Student.id AND gg.finalgrade IS NOT NULL ) THEN CONCAT( ug.firstname, ' ', ug.lastname )
+						WHEN ( ug.id != Student.id AND gg.finalgrade IS NOT NULL ) THEN CONCAT( gg.timemodified, '~', ug.firstname, ' ', ug.lastname )
 						ELSE ''
 					END ORDER BY gg.timemodified DESC SEPARATOR '|' ) Last_Grader,
 		Student.Gname Group_Name, c.id Cid,
@@ -92,17 +93,17 @@ FROM (
 	) Student
 	JOIN
 	(
-		SELECT DISTINCT t.firstname Tfirst, t.lastname Tlast, t.id, e.courseid Cid, Groupst.groupid Gid
-		FROM prefix_enrol e
-		JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
-		JOIN prefix_user t ON t.id = ue.userid
+		SELECT DISTINCT t.firstname Tfirst, t.lastname Tlast, t.id, et.courseid Cid, Groupst.groupid Gid
+		FROM prefix_enrol et
+		JOIN prefix_user_enrolments uet ON uet.enrolid = et.id
+		JOIN prefix_user t ON t.id = uet.userid
 		JOIN prefix_role_assignments rat ON rat.userid = t.id AND rat.roleid IN (3, 4)
-		JOIN prefix_context xt ON xt.contextlevel = 50 AND xt.id = rat.contextid AND xt.instanceid = e.courseid
+		JOIN prefix_context xt ON xt.contextlevel = 50 AND xt.id = rat.contextid AND xt.instanceid = et.courseid
 		LEFT JOIN (
 			SELECT gm.id groupmemberid, gm.timeadded, gm.groupid linkedgroupid, gm.userid, g.id groupid, g.name, g.courseid
 			FROM prefix_groups_members gm
 			JOIN prefix_groups g ON g.id = gm.groupid
-		) Groupst ON Groupst.userid = t.id AND Groupst.courseid = e.courseid
+		) Groupst ON Groupst.userid = t.id AND Groupst.courseid = et.courseid
 		-- WHERE t.suspended = 0
 		-- AND ue.status = 0
 		-- AND ue.timeend = ''
@@ -171,7 +172,7 @@ FROM (
 			END ) Auto_Marked,
 		MAX(gg.timemodified) Last_Grade_Timestamp,
 		GROUP_CONCAT( CASE
-						WHEN ( ug.id != Student.id AND gg.finalgrade IS NOT NULL ) THEN CONCAT( ug.firstname, ' ', ug.lastname )
+						WHEN ( ug.id != Student.id AND gg.finalgrade IS NOT NULL ) THEN CONCAT( gg.timemodified, '~', ug.firstname, ' ', ug.lastname )
 						ELSE ''
 					END ORDER BY gg.timemodified DESC SEPARATOR '|' ) Last_Grader,
 		Student.Gname Group_Name, c.id Cid,
@@ -207,21 +208,21 @@ FROM (
 	) Student
 	JOIN
 	(
-		SELECT DISTINCT t.firstname Tfirst, t.lastname Tlast, t.id, e.courseid Cid, Groupst.groupid Gid
-		FROM prefix_enrol e
-		JOIN prefix_user_enrolments ue ON ue.enrolid = e.id
-		JOIN prefix_user t ON t.id = ue.userid
-		JOIN prefix_role_assignments rat ON rat.userid = t.id AND rat.roleid IN (3, 4)
-		JOIN prefix_context xt ON xt.contextlevel = 50 AND xt.id = rat.contextid AND xt.instanceid = e.courseid
+		SELECT DISTINCT t.firstname Tfirst, t.lastname Tlast, t.id, et.courseid Cid, Groupst.groupid Gid
+		FROM prefix_enrol et
+		JOIN prefix_user_enrolments uet ON uet.enrolid = et.id
+		JOIN prefix_user t ON t.id = uet.userid
+		JOIN prefix_role_assignments rat ON rat.userid = t.id AND rat.roleid IN (3, 4, 17, 18)
+		JOIN prefix_context xt ON xt.contextlevel = 50 AND xt.id = rat.contextid AND xt.instanceid = et.courseid
 		LEFT JOIN (
 			SELECT gm.id groupmemberid, gm.timeadded, gm.groupid linkedgroupid, gm.userid, g.id groupid, g.name, g.courseid
 			FROM prefix_groups_members gm
 			JOIN prefix_groups g ON g.id = gm.groupid
-		) Groupst ON Groupst.userid = t.id AND Groupst.courseid = e.courseid
+		) Groupst ON Groupst.userid = t.id AND Groupst.courseid = et.courseid
 		-- WHERE t.suspended = 0
 		-- AND ue.status = 0
 		-- AND ue.timeend = ''
-	) Trainer ON Trainer.Cid = Student.Cid AND Trainer.id <> Student.id
+	) Trainer ON Trainer.Cid = Student.Cid AND Trainer.id <> Student.id AND Trainer.Gid = Student.Gid
 	JOIN prefix_course c ON c.id = Trainer.Cid
 		AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
 	JOIN prefix_grade_items gi ON gi.courseid = c.id AND gi.itemtype = 'mod'
