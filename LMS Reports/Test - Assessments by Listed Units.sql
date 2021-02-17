@@ -16,8 +16,16 @@ JOIN prefix_assign a ON a.course = cma.course AND a.id = cma.instance
 -- WHERE ( (LOWER(l.intro) REGEXP 'bsbmgt403') OR (LOWER(l.intro) REGEXP 'bsbcus501') OR (LOWER(l.intro) REGEXP 'bsbwor501') OR (LOWER(l.intro) REGEXP 'bsbpmg522') OR (LOWER(l.intro) REGEXP 'bsbrsk501') )
 -- WHERE ( (LOWER(l.intro) REGEXP 'cuafoh501') OR (LOWER(l.intro) REGEXP 'sitxmpr006') )
 -- WHERE ( (LOWER(l.intro) REGEXP 'bsbhrm506') OR (LOWER(l.intro) REGEXP 'bsbhrm513') )
-WHERE ( LOWER(l.intro) REGEXP 'bsbled401' )
-	AND NOT LOWER(l.intro) REGEXP 'instructions|resource -'
+-- WHERE ( LOWER(l.intro) REGEXP 'bsbled401' )
+-- WHERE ( LOWER(l.intro) REGEXP 'bsbadm405' )
+-- WHERE ( LOWER(l.intro) REGEXP 'bsbsls502' )
+-- WHERE ( LOWER(l.intro) REGEXP 'bsbmgt401' )
+-- WHERE ( LOWER(l.intro) REGEXP 'bsbldr402' )
+-- WHERE ( LOWER(l.intro) REGEXP 'bsbldr403' )
+-- WHERE ( LOWER(l.intro) REGEXP 'bsbinn301' )
+-- WHERE ( LOWER(l.intro) REGEXP 'bsbrel402' )
+WHERE ( LOWER(l.intro) REGEXP 'bsbhrm513' )
+	AND NOT LOWER(l.intro) REGEXP '(instructions -)|(reading -)|(resource -)|(third party( evidence){0,1} report)'
 	-- AND TRIM(a.name) REGEXP 'Assessment - (Manage ){0,1}(([rR]ecr(ui|iu)tment [sS]election)|(Selection Process)|([wW]orkforce [pP]lanning)).* Upload'
 	-- AND ( TRIM(a.name) REGEXP 'Assessment - Implement Continuous (I|i)mprovement'
 	-- 	OR TRIM(a.name) REGEXP 'Assessment -( Manage (Q|q)uality){0,1} (C|c)ustomer (S|s)ervice( BSBCUS501){0,1}( Part D| Upload| Video){0,1}'
