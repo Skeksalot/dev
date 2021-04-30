@@ -11,6 +11,9 @@ JOIN prefix_course_sections cs ON cs.id = cm.section and cs.course = c.id
 -- WHERE c.fullname REGEXP 'Diploma of Business'
 -- WHERE c.shortname REGEXP '(Dual_Dip|DUAL_DIP)_((HR_Bus)|(LM_Bus)|(LM_BUS)|(LM_BA)|(LM__BA))'
 WHERE c.shortname REGEXP 'CIV_MKG_COM'
+AND c.shortname NOT REGEXP 'Core Units Only'
+AND c.shortname NOT REGEXP '2021'
+AND c.category = 177
 AND LOWER(a.name) LIKE 'assessment -%'
 
 GROUP BY a.name
