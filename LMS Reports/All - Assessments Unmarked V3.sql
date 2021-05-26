@@ -2,7 +2,7 @@
 https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181
 */
 
-SELECT Trainer, Student, Course, Assessment, Submit_Time, Grade, Time_Graded, Overdue, Total_Submissions, Submitted_40_Days, FROM_UNIXTIME(Student_End) Student_End, DATEDIFF( CURDATE(), FROM_UNIXTIME(Student_End) ) Diff
+SELECT Trainer, Student, Course, Assessment, Submit_Time, Grade, Time_Graded, Overdue, Total_Submissions, Submitted_40_Days
 
 FROM (
 (
@@ -21,8 +21,7 @@ FROM (
 		CASE
 			WHEN DATEDIFF( CURDATE(), FROM_UNIXTIME(s.timemodified) ) < 40 THEN "Yes"
 			ELSE "No"
-		END Submitted_40_Days,
-		Students.Student_End
+		END Submitted_40_Days
 		
 	FROM (
 		SELECT DISTINCT e.courseid course_id, u.id student_id, CONCAT(u.firstname, ' ', u.lastname) student_name,
@@ -90,8 +89,7 @@ UNION /* Union used to pair non-grouped students with grouped students from sepa
 		CASE
 			WHEN DATEDIFF( CURDATE(), FROM_UNIXTIME(s.timemodified) ) < 40 THEN "Yes"
 			ELSE "No"
-		END Submitted_40_Days,
-		Students.Student_End
+		END Submitted_40_Days
 		
 	FROM (
 		SELECT DISTINCT e.courseid course_id, u.id student_id, CONCAT(u.firstname, ' ', u.lastname) student_name,
