@@ -2,7 +2,7 @@
 https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=181
 */
 
-SELECT Trainer, Student, Course, Assessment, Submit_Time, Grade, Time_Graded, Overdue, Total_Submissions, Submitted_40_Days
+SELECT Trainer, Student, Course, Assessment, Submit_Time, Grade, Time_Graded, Overdue, Total_Submissions, Submitted_40_Days, FROM_UNIXTIME(Student_End) Student_End, DATEDIFF( CURDATE(), FROM_UNIXTIME(Student_End) ) Diff
 
 FROM (
 (
@@ -21,7 +21,8 @@ FROM (
 		CASE
 			WHEN DATEDIFF( CURDATE(), FROM_UNIXTIME(s.timemodified) ) < 40 THEN "Yes"
 			ELSE "No"
-		END Submitted_40_Days
+		END Submitted_40_Days,
+		Students.Student_End
 		
 	FROM (
 		SELECT DISTINCT e.courseid course_id, u.id student_id, CONCAT(u.firstname, ' ', u.lastname) student_name,
@@ -38,7 +39,7 @@ FROM (
 		) Groups ON Groups.userid = u.id AND Groups.courseid = e.courseid
 		WHERE u.suspended = 0
 		AND ue.status = 0
-		AND ue.timeend = ''
+		AND ( ue.timeend = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(ue.timeend) ) <= 0 )
 	) Students
 	JOIN (
 		SELECT DISTINCT e.courseid course_id, t.id trainer_id, CONCAT(t.firstname, ' ', t.lastname) trainer_name,
@@ -55,7 +56,7 @@ FROM (
 		) Groupst ON Groupst.userid = t.id AND Groupst.courseid = e.courseid
 		WHERE t.suspended = 0
 		AND ue.status = 0
-		AND ue.timeend = ''
+		AND ( ue.timeend = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(ue.timeend) ) <= 0 )
 	) Trainers ON Trainers.course_id = Students.course_id AND Trainers.trainer_id <> Students.student_id
 	JOIN prefix_course c ON c.id = Students.course_id
 			AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
@@ -89,7 +90,8 @@ UNION /* Union used to pair non-grouped students with grouped students from sepa
 		CASE
 			WHEN DATEDIFF( CURDATE(), FROM_UNIXTIME(s.timemodified) ) < 40 THEN "Yes"
 			ELSE "No"
-		END Submitted_40_Days
+		END Submitted_40_Days,
+		Students.Student_End
 		
 	FROM (
 		SELECT DISTINCT e.courseid course_id, u.id student_id, CONCAT(u.firstname, ' ', u.lastname) student_name,
@@ -104,7 +106,7 @@ UNION /* Union used to pair non-grouped students with grouped students from sepa
 		JOIN prefix_groups g ON g.id = gm.groupid AND g.courseid = e.courseid
 		WHERE u.suspended = 0
 		AND ue.status = 0
-		AND ue.timeend = ''
+		AND ( ue.timeend = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(ue.timeend) ) <= 0 )
 	) Students
 	JOIN (
 		SELECT DISTINCT e.courseid course_id, t.id trainer_id, CONCAT(t.firstname, ' ', t.lastname) trainer_name,
@@ -118,7 +120,7 @@ UNION /* Union used to pair non-grouped students with grouped students from sepa
 		JOIN prefix_groups gt ON gt.id = gmt.groupid AND gt.courseid = e.courseid
 		WHERE t.suspended = 0
 		AND uet.status = 0
-		AND uet.timeend = ''
+		AND ( uet.timeend = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(uet.timeend) ) <= 0 )
 	) Trainers ON Trainers.course_id = Students.course_id AND Trainers.trainer_id <> Students.student_id AND Trainers.trainer_groupid = Students.student_groupid
 	JOIN prefix_course c ON c.id = Students.course_id
 			AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
