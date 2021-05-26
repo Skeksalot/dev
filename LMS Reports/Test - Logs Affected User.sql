@@ -2,21 +2,22 @@
 https://lms.upskilled.edu.au/blocks/configurable_reports/viewreport.php?id=299
 */
 
-SELECT DISTINCT CONCAT(u.firstname, ' ', u.lastname) User, CONCAT(realuser.firstname, ' ', realuser.lastname) Real_User, CONCAT(related.firstname, ' ', related.lastname) Related_User,
-	c.shortname Course, FROM_UNIXTIME(Logs.timecreated) Time_Created
+SELECT DISTINCT CONCAT(u.firstname, ' ', u.lastname) User, c.shortname Course, FROM_UNIXTIME(Logs.timecreated) Time_Created, Logs.action, Logs.objecttable, lab.intro
 
 FROM (
-	SELECT log.userid, log.realuserid, log.relateduserid, log.courseid, log.timecreated
+	SELECT log.userid, log.courseid, log.timecreated, log.action, log.eventname, log.objecttable, log.objectid
 	FROM prefix_logstore_standard_log log
 
-	WHERE DATEDIFF( CURDATE(), FROM_UNIXTIME(log.timecreated) ) <= 365
-	AND LOWER(log.action) REGEXP 'user updated'
-	AND log.relateduserid = 15790
 	-- WHERE DATEDIFF( FROM_UNIXTIME(log.timecreated), "2021-05-15 00:00:00" ) <= 7
+	WHERE DATEDIFF( CURDATE(), FROM_UNIXTIME(log.timecreated) ) <= 1095
+	AND LOWER(log.action) REGEXP 'updated'
+	AND log.eventname REGEXP 'course_module_completion'
+	AND log.userid = 14031
 ) Logs
 JOIN prefix_user u ON Logs.userid = u.id
-JOIN prefix_user realuser ON Logs.realuserid = realuser.id
-JOIN prefix_user related ON Logs.relateduserid = related.id
 JOIN prefix_course c ON Logs.courseid = c.id
+JOIN prefix_course_modules_completion cmc ON cmc.id = Logs.objectid
+JOIN prefix_course_modules cm ON cm.id = cmc.coursemoduleid
+LEFT JOIN prefix_label lab ON lab.id = cm.instance
 
-WHERE Logs.relateduserid IS NOT NULL
+ORDER BY Logs.timecreated ASC
