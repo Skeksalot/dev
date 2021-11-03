@@ -50,9 +50,9 @@ FROM (
 	WHERE LOWER(TRIM(a.name)) LIKE 'assessment -%'
 	AND s.status = 'submitted'
 	AND Students.student_status = 0
-	AND Students.student_end = ''
+	AND ( Students.student_end = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(Students.student_end) ) <= 0 )
 	AND Trainers.trainer_status = 0
-	AND Trainers.trainer_end = ''
+	AND ( Trainers.trainer_end = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(Trainers.trainer_end) ) <= 0 )
 	AND Students.student_groupid IS NULL
 	AND YEAR(FROM_UNIXTIME(s.timemodified)) = YEAR( DATE_SUB( CURDATE(), INTERVAL 1 MONTH ) )
 	AND MONTH(FROM_UNIXTIME(s.timemodified)) = MONTH( DATE_SUB( CURDATE(), INTERVAL 1 MONTH ) )
@@ -89,9 +89,9 @@ UNION
 	JOIN prefix_assign_submission s ON s.userid = u.id AND s.assignment = a.id
 	
 	WHERE ue.status = 0
-	AND ue.timeend = ''
+	AND ( ue.timeend = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(ue.timeend) ) <= 0 )
 	AND uet.status = 0
-	AND uet.timeend = ''
+	AND ( uet.timeend = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(uet.timeend) ) <= 0 )
 	AND LOWER(TRIM(a.name)) LIKE 'assessment -%'
 	AND s.status = 'submitted'
 	AND YEAR(FROM_UNIXTIME(s.timemodified)) = YEAR( DATE_SUB( CURDATE(), INTERVAL 1 MONTH ) )

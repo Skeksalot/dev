@@ -26,7 +26,7 @@ JOIN prefix_assign_submission asub ON asub.assignment = a.id AND asub.userid = u
 
 WHERE u.suspended = 0
 AND ue.status = 0
-AND ue.timeend = ''
+AND ( ue.timeend = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(ue.timeend) ) <= 0 )
 /* Live courses */
 AND c.category NOT IN ( 46, 1, 48, 15, 51, 158, 153, 38, 72, 73, 38, 39, 37, 35, 75, 58, 36, 74, 66, 194, 54, 236, 50, 55, 181, 5, 44, 9, 101 )
 /* Live courses + archives */
