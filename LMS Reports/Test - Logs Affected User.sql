@@ -9,8 +9,9 @@ FROM (
 	FROM prefix_logstore_standard_log log
 
 	-- WHERE DATEDIFF( FROM_UNIXTIME(log.timecreated), "2021-05-15 00:00:00" ) <= 7
-	WHERE DATEDIFF( CURDATE(), FROM_UNIXTIME(log.timecreated) ) <= 180
-	AND log.userid = 18221
+	-- WHERE DATEDIFF( CURDATE(), FROM_UNIXTIME(log.timecreated) ) <= 180
+	WHERE log.userid = 15874
+	-- AND log.userid = 15874
 ) Logs
 JOIN prefix_user u ON Logs.userid = u.id
 JOIN prefix_course c ON Logs.courseid = c.id
