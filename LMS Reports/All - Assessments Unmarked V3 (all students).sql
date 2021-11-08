@@ -23,7 +23,7 @@ FROM (
             ELSE 'Suspended'
         END Account_Status,
         CASE
-            WHEN student_status = 0 THEN 'Active'
+            WHEN ( student_status = 0 AND ( student_end = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(student_end) ) <= 0 ) ) THEN 'Active'
             ELSE 'Inactive'
         END Enrolment_Status,
         CASE
@@ -97,7 +97,7 @@ UNION /* Union used to pair non-grouped students with grouped students from sepa
             ELSE 'Suspended'
         END Account_Status,
         CASE
-            WHEN student_status = 0 THEN 'Active'
+            WHEN ( student_status = 0 AND ( student_end = '' OR DATEDIFF( CURDATE(), FROM_UNIXTIME(student_end) ) <= 0 ) ) THEN 'Active'
             ELSE 'Inactive'
         END Enrolment_Status,
         CASE
