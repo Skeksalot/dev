@@ -16,7 +16,8 @@ SELECT CONCAT( u.firstname, ' ', u.lastname ) Sender, CONCAT( u2.firstname, ' ',
 FROM (
 	SELECT m.useridfrom, m.useridto, m.subject, m.fullmessage, m.fullmessagehtml, m.timecreated, m.timeread, m.timeuserfromdeleted, m.timeusertodeleted
 	FROM prefix_message_read m
-	WHERE ( m.useridfrom = 20574 OR m.useridto = 20574 )
+	WHERE ( m.useridfrom = 6736 OR m.useridfrom = 6679 )
+	OR ( m.useridto = 6736 OR m.useridto = 6679 )
 ) Message
 JOIN prefix_user u ON u.id = Message.useridfrom
 JOIN prefix_user u2 ON u2.id = Message.useridto
